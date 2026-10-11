@@ -127,32 +127,40 @@ ctx.restore();
 }
 ctx.save();ctx.translate(x,y);ctx.scale(.38,.38);ctx.translate(-x,-y);R(x-17,y-17,5,3,'#263f34');R(x-16,y-16,3,1,tick%20<10?'#b9e769':'#52775a');ctx.restore();
 }
-/* Render material at a constant distance along each conveyor's flow axis.
-   A tile that turns the stream uses a single corner at its CENTER, not an
-   entry-edge-to-center half-run that visually dips inside the tile. */
-for(const route of beltRoutes){
- const path=[];
- const add=(pt)=>{const last=path[path.length-1];if(!last||Math.abs(last.x-pt.x)>.001||Math.abs(last.y-pt.y)>.001)path.push({x:pt.x,y:pt.y,d:0});};
- for(let i=0;i<route.length;i++){
-  const seg=route[i],prev=route[i-1];
-  if(!prev)add(seg.ep);
-  else add(prev.ex);
-  /* For straight-through tiles, centerline remains flat. For a direction
-     change, the corner is exactly the tile center, with no curve or overshoot. */
-  add(seg.p);
-  add(seg.ex);
+/* Tile-by-tile conveyor transport. Every item has a fixed distance phase
+   along a route. It moves to the outgoing edge, enters the next tile at the
+   shared edge, reaches that tile's center, then follows its outgoing direction.
+   The direction changes only at the next tile center; no curve/easing is used. */
+for (const route of beltRoutes) {
+ const segments = [];
+ let total = 0;
+ for (let i = 0; i < route.length; i++) {
+  const seg = route[i], prev = route[i - 1];
+  const entry = prev ? prev.ex : seg.ep;
+  const points = [entry, seg.p, seg.ex];
+  for (let j = 1; j < points.length; j++) {
+   const a = points[j - 1], b = points[j];
+   const len = Math.hypot(b.x - a.x, b.y - a.y);
+   if (len < .001) continue;
+   segments.push({a, b, start: total, end: total + len});
+   total += len;
+  }
  }
- if(path.length<2)continue;
- let total=0;
- for(let i=1;i<path.length;i++){total+=Math.hypot(path[i].x-path[i-1].x,path[i].y-path[i-1].y);path[i].d=total;}
- if(total<1)continue;
- const spacing=12,speed=1.25,count=Math.floor(total/spacing)+1,travel=(tick*speed)%total;
- for(let n=0;n<count;n++){
-  const d=(travel+n*spacing)%total;let lo=1,hi=path.length-1;
-  while(lo<hi){const mid=(lo+hi)>>1;if(path[mid].d<d)lo=mid+1;else hi=mid;}
-  const a=path[lo-1],b=path[lo],len=b.d-a.d,t=len?(d-a.d)/len:0;
-  const x=a.x+(b.x-a.x)*t,y=a.y+(b.y-a.y)*t;
-  R(x-1.5,y-1.5,3,3,n%2?'#e7c85e':'#fff0a0');
+ if (total < 1) continue;
+ const spacing = 12, speed = 1.25, count = Math.floor(total / spacing) + 1;
+ const travel = (tick * speed) % total;
+ for (let n = 0; n < count; n++) {
+  let d = (travel + n * spacing) % total;
+  let lo = 0, hi = segments.length - 1;
+  while (lo < hi) {
+   const mid = (lo + hi) >> 1;
+   if (segments[mid].end < d) lo = mid + 1; else hi = mid;
+  }
+  const seg = segments[lo], len = seg.end - seg.start;
+  const t = len ? Math.max(0, Math.min(1, (d - seg.start) / len)) : 0;
+  const x = seg.a.x + (seg.b.x - seg.a.x) * t;
+  const y = seg.a.y + (seg.b.y - seg.a.y) * t;
+  R(x - 1.5, y - 1.5, 3, 3, n % 2 ? '#e7c85e' : '#fff0a0');
  }
 }
 /* Only installed machines have a lit status lamp and moving operating parts. */
