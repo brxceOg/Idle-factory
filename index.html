@@ -87,10 +87,12 @@ if(p.id==='conveyor'){
  R(x-16,y-12,32,24,'#344b3d');R(x-15,y-11,30,22,'#607b5d');R(x-13,y-9,26,18,'#283f36');
  if(horizontal){
   R(x-16,y-10,32,2,'#d7bd69');R(x-16,y+8,32,2,'#d7bd69');
-  for(let q=0;q<4;q++){const pos=(tick*1.05+q*7)%28,bx=flow==='L'?x+14-pos:x-14+pos;R(bx,y-5,4,10,q%2?'#d8bd69':'#b9c99a')}
+  /* Static belt ribs: moving slats per tile looked like they reset/bounced at joins. */
+  for(let q=0;q<5;q++){const bx=x-10+q*5;R(bx,y-5,2,10,q%2?'#8fa27b':'#aebd91')}
  }else{
   R(x-14,y-12,2,24,'#d7bd69');R(x+12,y-12,2,24,'#d7bd69');
-  for(let q=0;q<4;q++){const pos=(tick*0.8+q*6)%20,by=flow==='U'?y+10-pos:y-10+pos;R(x-5,by,10,3,q%2?'#d8bd69':'#b9c99a')}
+  /* Static ribs keep the belt texture from appearing to reverse at tile edges. */
+  for(let q=0;q<4;q++){const by=y-7+q*5;R(x-5,by,10,2,q%2?'#8fa27b':'#aebd91')}
  }
  for(const q of machineNeighbors){
   if(q.dir==='L')R(x-14,y-3,4,6,'#e8bd57');
