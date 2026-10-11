@@ -60,45 +60,51 @@ for(let row=0;row<gridRows;row++)for(let col=0;col<gridCols;col++){const gx=grid
 const occupiedAt=(x,y)=>placed.find(q=>q.x===x&&q.y===y);
 for(const p of placed){const d=machines.find(m=>m.id===p.id);if(!d)continue;const x=p.x,y=p.y;
 if(p.id==='conveyor'){
-/* Draw a continuous belt lane through each occupied neighboring tile. */
-const neighbors=[[-gridDX,0,'L'],[gridDX,0,'R'],[0,-gridDY,'U'],[0,gridDY,'D']].map(([dx,dy,dir])=>({p:occupiedAt(x+dx,y+dy),dir})).filter(q=>q.p);
-const beltNeighbors=neighbors.filter(q=>q.p.id==='conveyor');
-const machineNeighbors=neighbors.filter(q=>q.p.id!=='conveyor');
-R(x-15,y-10,30,20,'#344b3d');
-R(x-13,y-7,26,14,'#283f36');
-R(x-13,y-9,26,2,'#d7bd69');R(x-13,y+7,26,2,'#d7bd69');
-for(let q=0;q<4;q++){const bx=x-11+((tick*1.05+q*7)%22);R(bx,y-5,4,10,q%2?'#d8bd69':'#b9c99a')}
-/* Arms are drawn AFTER the center so the tracks visibly meet and don't get covered. */
-for(const q of neighbors){
- if(q.dir==='L'){R(x-16,y-5,5,10,'#344b3d');R(x-16,y-3,5,6,'#607b5d')}
- if(q.dir==='R'){R(x+11,y-5,5,10,'#344b3d');R(x+11,y-3,5,6,'#607b5d')}
- if(q.dir==='U'){R(x-5,y-12,10,5,'#344b3d');R(x-3,y-12,6,5,'#607b5d')}
- if(q.dir==='D'){R(x-5,y+7,10,5,'#344b3d');R(x-3,y+7,6,5,'#607b5d')}
-}
-for(const q of machineNeighbors){
- if(q.dir==='L')R(x-14,y-3,4,6,'#e8bd57');
- if(q.dir==='R')R(x+10,y-3,4,6,'#e8bd57');
- if(q.dir==='U')R(x-3,y-9,6,4,'#e8bd57');
- if(q.dir==='D')R(x-3,y+5,6,4,'#e8bd57');
-}
-/* A chip travels from the belt center toward a connected belt tile each cycle. */
-if(beltNeighbors.length){
- const q=beltNeighbors[Math.floor(tick/36)%beltNeighbors.length],phase=(tick%36)/36;
- let mx=x,my=y;
- if(q.dir==='L')mx=x-13+phase*8;
- if(q.dir==='R')mx=x+13-phase*8;
- if(q.dir==='U')my=y-9+phase*5;
- if(q.dir==='D')my=y+9-phase*5;
+ /* Belts have a real direction. Connected belts keep their tracks aligned;
+    tapping a belt rotates it, and newly placed belts inherit nearby flow. */
+ const neighbors=[[-gridDX,0,'L'],[gridDX,0,'R'],[0,-gridDY,'U'],[0,gridDY,'D']].map(([dx,dy,dir])=>({p:occupiedAt(x+dx,y+dy),dir})).filter(q=>q.p);
+ const beltNeighbors=neighbors.filter(q=>q.p.id==='conveyor');
+ const machineNeighbors=neighbors.filter(q=>q.p.id!=='conveyor');
+ const flow=p.dir||'R',horizontal=flow==='L'||flow==='R';
+ R(x-15,y-10,30,20,'#344b3d');R(x-13,y-7,26,14,'#283f36');
+ if(horizontal){
+  R(x-13,y-9,26,2,'#d7bd69');R(x-13,y+7,26,2,'#d7bd69');
+  for(let q=0;q<4;q++){const bx=x-11+((tick*1.05+q*7)%22);R(bx,y-5,4,10,q%2?'#d8bd69':'#b9c99a')}
+ }else{
+  R(x-13,y-9,2,18,'#d7bd69');R(x+11,y-9,2,18,'#d7bd69');
+  for(let q=0;q<4;q++){const by=y-7+((tick*0.8+q*6)%14);R(x-5,by,10,3,q%2?'#d8bd69':'#b9c99a')}
+ }
+ /* Extend track connectors to every adjacent tile. */
+ for(const q of neighbors){
+  if(q.dir==='L'){R(x-16,y-5,5,10,'#344b3d');R(x-16,y-3,5,6,'#607b5d')}
+  if(q.dir==='R'){R(x+11,y-5,5,10,'#344b3d');R(x+11,y-3,5,6,'#607b5d')}
+  if(q.dir==='U'){R(x-5,y-12,10,5,'#344b3d');R(x-3,y-12,6,5,'#607b5d')}
+  if(q.dir==='D'){R(x-5,y+7,10,5,'#344b3d');R(x-3,y+7,6,5,'#607b5d')}
+ }
+ for(const q of machineNeighbors){
+  if(q.dir==='L')R(x-14,y-3,4,6,'#e8bd57');
+  if(q.dir==='R')R(x+10,y-3,4,6,'#e8bd57');
+  if(q.dir==='U')R(x-3,y-9,6,4,'#e8bd57');
+  if(q.dir==='D')R(x-3,y+5,6,4,'#e8bd57');
+ }
+ /* Direction arrow shows where items leave this tile. */
+ ctx.fillStyle='#fff0a0';ctx.beginPath();
+ if(flow==='R'){ctx.moveTo(x+7,y);ctx.lineTo(x+2,y-4);ctx.lineTo(x+2,y+4)}
+ else if(flow==='L'){ctx.moveTo(x-7,y);ctx.lineTo(x-2,y-4);ctx.lineTo(x-2,y+4)}
+ else if(flow==='D'){ctx.moveTo(x,y+5);ctx.lineTo(x-4,y);ctx.lineTo(x+4,y)}
+ else{ctx.moveTo(x,y-5);ctx.lineTo(x-4,y);ctx.lineTo(x+4,y)}
+ ctx.closePath();ctx.fill();
+ /* Chips travel toward a connected tile in the output direction. */
+ const outDir=flow,out=beltNeighbors.find(q=>q.dir===outDir),outMachine=machineNeighbors.find(q=>q.dir===outDir);
+ const phase=(tick%36)/36;let mx=x,my=y;
+ if(out||outMachine){
+  if(outDir==='L')mx=x-12+phase*8;
+  if(outDir==='R')mx=x+12-phase*8;
+  if(outDir==='U')my=y-8+phase*5;
+  if(outDir==='D')my=y+8-phase*5;
+ }else if(horizontal)mx=x-7+((tick*0.45)%14);
+ else my=y-5+((tick*0.35)%10);
  R(mx-2,my-2,4,4,'#fff0a0');
-}else if(machineNeighbors.length){
- const q=machineNeighbors[Math.floor(tick/48)%machineNeighbors.length],phase=(tick%48)/48;
- let mx=x,my=y;
- if(q.dir==='L')mx=x-13+phase*8;
- if(q.dir==='R')mx=x+13-phase*8;
- if(q.dir==='U')my=y-9+phase*5;
- if(q.dir==='D')my=y+9-phase*5;
- R(mx-2,my-2,4,4,'#fff0a0');
-}
 }else{
 /* Each machine uses its own silhouette, scaled down to leave room for more builds. */
 ctx.save();ctx.translate(x,y);ctx.scale(.38,.38);ctx.translate(-x,-y);
@@ -122,6 +128,6 @@ for(let i=0;i<Math.min(9,count(s.workers));i++){const x=200+(i%5)*48+Math.sin(ti
 R(41,41,106,18,'#263f34');R(45,45,7,10,'#b9e769');ctx.fillStyle='#f7e8bd';ctx.font='bold 10px monospace';ctx.fillText('LITTLE FACTORY',57,53);
 R(459,41,113,18,'#263f34');R(463,45,6,10,'#e7c75c');ctx.fillStyle='#d6e1b1';ctx.font='bold 9px monospace';ctx.fillText(placed.length+' MACHINE'+(placed.length===1?'':'S'),474,53);
 R(30,341,560,12,'#46573e');R(34,344,552,4,'#d6b95e');for(let x=37;x<582;x+=24)R(x,344,10,4,'#364a3a');R(32,25,559,3,'#f0d88c');R(32,25,3,338,'#f0d88c');
-}function animate(){tick++;if(tick%8===0){const gain=rate()/7.5;s.scrap+=gain;s.total+=gain;updateStats();if(tick%120===0)save()}draw();requestAnimationFrame(animate)}function canvasPoint(e){const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*canvas.width,y:(e.clientY-r.top)/r.height*canvas.height}}canvas.addEventListener('pointermove',e=>{pointerPos=canvasPoint(e);if(pendingPlacement)draw()});canvas.addEventListener('pointerdown',e=>{const {x,y}=canvasPoint(e);pointerPos={x,y};if(pendingPlacement){if(x<38||x>582||y<82||y>272){notify('Choose a tile inside the grid.');draw();return}const p=snapGrid({x,y});if(Math.hypot(p.x-x,p.y-y)>20){notify('Tap near the center of a grid tile.');return}if(s.placed.some(q=>q.x===p.x&&q.y===p.y)){notify('That tile is occupied. Belts and machines each use one tile.');draw();return}const id=pendingPlacement,d=machines.find(m=>m.id===id),price=cost(d,'machine');if(s.scrap<price){pendingPlacement=null;render();draw();notify('Not enough scrap to install that item.');return}s.scrap-=price;s.placed.push({id,x:p.x,y:p.y});s.machines[id]=(s.machines[id]||0)+1;pendingPlacement=null;render();draw();save();notify(id==='conveyor'?'Conveyor placed. It connects to adjacent belts and machines!':d.name+' installed. Adjacent conveyor belts connect automatically.');return}if(x>75&&x<235&&y>95&&y<184)bonus()});render();draw();animate();save();if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js?v=13').catch(()=>{});document.addEventListener('visibilitychange',()=>{if(document.hidden)save();else{const secs=Math.max(0,Math.min(28800,(Date.now()-(s.last||Date.now()))/1000));if(secs>2){const gain=rate()*secs;s.scrap+=gain;s.total+=gain;notify('Back to work! +'+fmt(gain)+' scrap earned.')}render();save()}});
+}function animate(){tick++;if(tick%8===0){const gain=rate()/7.5;s.scrap+=gain;s.total+=gain;updateStats();if(tick%120===0)save()}draw();requestAnimationFrame(animate)}function canvasPoint(e){const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*canvas.width,y:(e.clientY-r.top)/r.height*canvas.height}}canvas.addEventListener('pointermove',e=>{pointerPos=canvasPoint(e);if(pendingPlacement)draw()});canvas.addEventListener('pointerdown',e=>{const {x,y}=canvasPoint(e);pointerPos={x,y};if(!pendingPlacement){const tile=s.placed.find(q=>q.id==='conveyor'&&Math.abs(q.x-x)<=15&&Math.abs(q.y-y)<=10);if(tile){const dirs=['R','D','L','U'];tile.dir=dirs[(dirs.indexOf(tile.dir||'R')+1)%dirs.length];save();draw();notify('Belt rotated '+({R:'right →',D:'down ↓',L:'left ←',U:'up ↑'}[tile.dir])+'.');return}}if(pendingPlacement){if(x<38||x>582||y<82||y>272){notify('Choose a tile inside the grid.');draw();return}const p=snapGrid({x,y});if(Math.hypot(p.x-x,p.y-y)>20){notify('Tap near the center of a grid tile.');return}if(s.placed.some(q=>q.x===p.x&&q.y===p.y)){notify('That tile is occupied. Belts and machines each use one tile.');draw();return}const id=pendingPlacement,d=machines.find(m=>m.id===id),price=cost(d,'machine');if(s.scrap<price){pendingPlacement=null;render();draw();notify('Not enough scrap to install that item.');return}s.scrap-=price;const tile={id,x:p.x,y:p.y};if(id==='conveyor'){const near=s.placed.filter(q=>q.id==='conveyor'&&((Math.abs(q.x-x)===gridDX&&q.y===y)||(Math.abs(q.y-y)===gridDY&&q.x===x)));const nearMachine=s.placed.filter(q=>q.id!=='conveyor'&&((Math.abs(q.x-x)===gridDX&&q.y===y)||(Math.abs(q.y-y)===gridDY&&q.x===x)));if(near.length)tile.dir=near[0].dir||'R';else if(nearMachine.length){const m=nearMachine[0];tile.dir=m.x<x?'R':m.x>x?'L':m.y<y?'D':'U'}else tile.dir='R'}s.placed.push(tile);s.machines[id]=(s.machines[id]||0)+1;pendingPlacement=null;render();draw();save();notify(id==='conveyor'?'Conveyor placed and aligned to nearby belt flow. Tap a belt to rotate its direction.':d.name+' installed. Adjacent conveyor belts connect automatically.');return}if(x>75&&x<235&&y>95&&y<184)bonus()});render();draw();animate();save();if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js?v=14').catch(()=>{});document.addEventListener('visibilitychange',()=>{if(document.hidden)save();else{const secs=Math.max(0,Math.min(28800,(Date.now()-(s.last||Date.now()))/1000));if(secs>2){const gain=rate()*secs;s.scrap+=gain;s.total+=gain;notify('Back to work! +'+fmt(gain)+' scrap earned.')}render();save()}});
 })();
 </script></body></html>
