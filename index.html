@@ -69,7 +69,7 @@ function buildBeltRoute(start){
   const ep=entry==='L'?{x:p.x-16,y:p.y}:entry==='R'?{x:p.x+16,y:p.y}:entry==='U'?{x:p.x,y:p.y-12}:{x:p.x,y:p.y+12};
   const ex=flow==='L'?{x:p.x-16,y:p.y}:flow==='R'?{x:p.x+16,y:p.y}:flow==='U'?{x:p.x,y:p.y-12}:{x:p.x,y:p.y+12};
   const seg={p,entry,flow,ep,ex,idx:route.length};route.push(seg);beltAnim.set(p,seg);
-  const delta=dirDelta[flow],next=beltAt(p.x+delta[0],p.y+delta[1]);if(!next||seenBelts.has(next))break;p=next;
+  const delta=dirDelta[flow],next=beltAt(p.x+delta[0],p.y+delta[1]);if(!next||seenBelts.has(next))break;/* A belt facing back toward the tile it receives from creates a false out-and-back path. Treat that as a blocked join instead of animating a bounce. */const nextFlow=next.dir||'R';if(nextFlow===opposite[flow])break;p=next;
  }
  if(route.length){route.forEach((seg,i)=>{seg.route=route;seg.routeLen=route.length;seg.offset=i;});beltRoutes.push(route);}
 }
