@@ -58,6 +58,11 @@ R(38,82,544,190,'#b6b18a');R(42,86,536,182,'#c9c39a');
 const placed=Array.isArray(s.placed)?s.placed:[],feedXs=[];
 for(let row=0;row<gridRows;row++)for(let col=0;col<gridCols;col++){const gx=gridX+col*gridDX,gy=gridY+row*gridDY;R(gx-15,gy-11,30,22,'#b9b18a');R(gx-14,gy-10,28,20,'#c8c29a');R(gx-14,gy-10,28,1,'#e1d6ac');}
 const occupiedAt=(x,y)=>placed.find(q=>q.x===x&&q.y===y);
+const beltAnim=new Map(),beltTiles=placed.filter(q=>q.id==='conveyor'),beltAt=(x,y)=>beltTiles.find(q=>q.x===x&&q.y===y),dirDelta={R:[gridDX,0],L:[-gridDX,0],D:[0,gridDY],U:[0,-gridDY]},opposite={R:'L',L:'R',D:'U',U:'D'};
+const hasIncoming=p=>{const d=p.dir||'R',[dx,dy]=dirDelta[opposite[d]]||[0,0],q=beltAt(p.x+dx,p.y+dy);return !!q&&(q.dir||'R')===d};
+const seenBelts=new Set();
+function buildBeltRoute(start){const route=[];let p=start,guard=0;while(p&&!seenBelts.has(p)&&guard++<beltTiles.length+1){seenBelts.add(p);const flow=p.dir||'R',prev=route.length?route[route.length-1]:null;const entry=prev?(prev.x<p.x?'L':prev.x>p.x?'R':prev.y<p.y?'U':'D'):opposite[flow];const ep=entry==='L'?{x:p.x-16,y:p.y}:entry==='R'?{x:p.x+16,y:p.y}:entry==='U'?{x:p.x,y:p.y-12}:{x:p.x,y:p.y+12};const ex=flow==='L'?{x:p.x-16,y:p.y}:flow==='R'?{x:p.x+16,y:p.y}:flow==='U'?{x:p.x,y:p.y-12}:{x:p.x,y:p.y+12};const seg={p,entry,flow,ep,ex,idx:route.length};route.push(seg);beltAnim.set(p,seg);const delta=dirDelta[flow],next=beltAt(p.x+delta[0],p.y+delta[1]);if(!next)break;p=next;}const len=route.length||1;route.forEach((seg,i)=>{seg.routeLen=len;seg.offset=i;});}
+for(const p of beltTiles){if(!hasIncoming(p)&&!seenBelts.has(p))buildBeltRoute(p);}for(const p of beltTiles){if(!seenBelts.has(p))buildBeltRoute(p);}
 for(const p of placed){const d=machines.find(m=>m.id===p.id);if(!d)continue;const x=p.x,y=p.y;
 if(p.id==='conveyor'){
  /* Belts have a real direction. Connected belts keep their tracks aligned;
@@ -88,41 +93,10 @@ if(p.id==='conveyor'){
  else if(flow==='D'){ctx.moveTo(x,y+5);ctx.lineTo(x-4,y);ctx.lineTo(x+4,y)}
  else{ctx.moveTo(x,y-5);ctx.lineTo(x-4,y);ctx.lineTo(x+4,y)}
  ctx.closePath();ctx.fill();
- /* Synchronized stream: chips enter from the upstream side, pass through
-    the tile center, then follow this belt's direction. Turns are animated
-    through the tile instead of restarting at an unrelated position. */
- const incomingCandidates=[
-  {p:occupiedAt(x-gridDX,y),entry:'L',pointsTo:'R'},
-  {p:occupiedAt(x+gridDX,y),entry:'R',pointsTo:'L'},
-  {p:occupiedAt(x,y-gridDY),entry:'U',pointsTo:'D'},
-  {p:occupiedAt(x,y+gridDY),entry:'D',pointsTo:'U'}
- ].filter(q=>q.p&&q.p.id==='conveyor'&&(q.p.dir||'R')===q.pointsTo);
- const entry=incomingCandidates.length?incomingCandidates[0].entry:({R:'L',L:'R',D:'U',U:'D'}[flow]);
- const phase=(tick%28)/28;
- const entryPoint=(dir)=>{
-  if(dir==='L')return{x:x-14,y};
-  if(dir==='R')return{x:x+14,y};
-  if(dir==='U')return{x,y:y-10};
-  return{x,y:y+10};
- };
- const exitPoint=(dir)=>{
-  if(dir==='R')return{x:x+14,y};
-  if(dir==='L')return{x:x-14,y};
-  if(dir==='D')return{x,y:y+10};
-  return{x,y:y-10};
- };
- for(let n=0;n<4;n++){
-  const t=(phase+n/4)%1;let m;
-  if(t<.5){
-   const a=entryPoint(entry),u=t*2;
-   m={x:a.x+(x-a.x)*u,y:a.y+(y-a.y)*u};
-  }else{
-   const b=exitPoint(flow),u=(t-.5)*2;
-   m={x:x+(b.x-x)*u,y:y+(b.y-y)*u};
-  }
-  R(m.x-2,m.y-2,4,4,n%2?'#d8bd69':'#fff0a0');
- }
-}else{
+ /* Chips share a route-wide timeline instead of restarting per tile. */
+ const seg=beltAnim.get(p);
+ if(seg){const period=seg.routeLen*28,travel=(tick*0.8)%period;for(let n=0;n<Math.max(4,seg.routeLen*2);n++){const d=((travel+n*14-seg.offset*28)%period+period)%period;if(d>28)continue;const t=d/28,center={x,y};let m;if(t<.5){const u=t*2;m={x:seg.ep.x+(center.x-seg.ep.x)*u,y:seg.ep.y+(center.y-seg.ep.y)*u};}else{const u=(t-.5)*2;m={x:center.x+(seg.ex.x-center.x)*u,y:center.y+(seg.ex.y-center.y)*u};}R(m.x-2,m.y-2,4,4,n%2?'#d8bd69':'#fff0a0');}}
+ }else{
 /* Each machine uses its own silhouette, scaled down to leave room for more builds. */
 ctx.save();ctx.translate(x,y);ctx.scale(.38,.38);ctx.translate(-x,-y);
 if(p.id==='press'){R(x-23,y-21,8,42,'#31483b');R(x+15,y-21,8,42,'#31483b');R(x-27,y-22,54,7,'#d1b866');R(x-22,y-19,44,4,'#78906b');R(x-18,y-13,36,8,'#4b6650');R(x-13,y-5,26,16,'#9ca982');R(x-10,y-2,20,10,'#d9c778');R(x-26,y+16,52,6,'#344a3b');R(x-20,y+12,40,4,'#e0c66d');const ram=tick%24<12?0:4;R(x-12,y-12+ram,24,9,'#506a55');R(x-8,y-9+ram,16,4,'#b6c59a')}
@@ -145,6 +119,6 @@ for(let i=0;i<Math.min(9,count(s.workers));i++){const x=200+(i%5)*48+Math.sin(ti
 R(41,41,106,18,'#263f34');R(45,45,7,10,'#b9e769');ctx.fillStyle='#f7e8bd';ctx.font='bold 10px monospace';ctx.fillText('LITTLE FACTORY',57,53);
 R(459,41,113,18,'#263f34');R(463,45,6,10,'#e7c75c');ctx.fillStyle='#d6e1b1';ctx.font='bold 9px monospace';ctx.fillText(placed.length+' MACHINE'+(placed.length===1?'':'S'),474,53);
 R(30,341,560,12,'#46573e');R(34,344,552,4,'#d6b95e');for(let x=37;x<582;x+=24)R(x,344,10,4,'#364a3a');R(32,25,559,3,'#f0d88c');R(32,25,3,338,'#f0d88c');
-}function animate(){tick++;if(tick%8===0){const gain=rate()/7.5;s.scrap+=gain;s.total+=gain;updateStats();if(tick%120===0)save()}draw();requestAnimationFrame(animate)}function canvasPoint(e){const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*canvas.width,y:(e.clientY-r.top)/r.height*canvas.height}}canvas.addEventListener('pointermove',e=>{pointerPos=canvasPoint(e);if(pendingPlacement)draw()});canvas.addEventListener('pointerdown',e=>{const {x,y}=canvasPoint(e);pointerPos={x,y};if(!pendingPlacement){const tile=s.placed.find(q=>q.id==='conveyor'&&Math.abs(q.x-x)<=15&&Math.abs(q.y-y)<=10);if(tile){const dirs=['R','D','L','U'],next=dirs[(dirs.indexOf(tile.dir||'R')+1)%dirs.length];tile.dir=next;save();draw();notify('This conveyor now flows '+({R:'right →',D:'down ↓',L:'left ←',U:'up ↑'}[next])+'.');return}}if(pendingPlacement){if(x<38||x>582||y<82||y>272){notify('Choose a tile inside the grid.');draw();return}const p=snapGrid({x,y});if(Math.hypot(p.x-x,p.y-y)>20){notify('Tap near the center of a grid tile.');return}if(s.placed.some(q=>q.x===p.x&&q.y===p.y)){notify('That tile is occupied. Belts and machines each use one tile.');draw();return}const id=pendingPlacement,d=machines.find(m=>m.id===id),price=cost(d,'machine');if(s.scrap<price){pendingPlacement=null;render();draw();notify('Not enough scrap to install that item.');return}s.scrap-=price;const tile={id,x:p.x,y:p.y};if(id==='conveyor'){const adjacent=s.placed.filter(q=>q.id==='conveyor'&&((Math.abs(q.x-p.x)===gridDX&&q.y===p.y)||(Math.abs(q.y-p.y)===gridDY&&q.x===p.x)));const upstream=adjacent.find(q=>(q.x===p.x&&q.y===p.y-gridDY)||(q.x===p.x-gridDX&&q.y===p.y));const neighbor=upstream||adjacent[0];if(neighbor){if(neighbor.x===p.x&&neighbor.y<p.y)tile.dir='D';else if(neighbor.x===p.x&&neighbor.y>p.y)tile.dir='U';else if(neighbor.x<p.x&&neighbor.y===p.y)tile.dir='R';else if(neighbor.x>p.x&&neighbor.y===p.y)tile.dir='L';else tile.dir=neighbor.dir||'R'}else tile.dir='R'}s.placed.push(tile);s.machines[id]=(s.machines[id]||0)+1;pendingPlacement=null;render();draw();save();notify(id==='conveyor'?'Conveyor placed and aligned to nearby belt flow. Tap a belt to rotate its direction.':d.name+' installed. Adjacent conveyor belts connect automatically.');return}if(x>75&&x<235&&y>95&&y<184)bonus()});render();draw();animate();save();if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js?v=22').catch(()=>{});document.addEventListener('visibilitychange',()=>{if(document.hidden)save();else{const secs=Math.max(0,Math.min(28800,(Date.now()-(s.last||Date.now()))/1000));if(secs>2){const gain=rate()*secs;s.scrap+=gain;s.total+=gain;notify('Back to work! +'+fmt(gain)+' scrap earned.')}render();save()}});
+}function animate(){tick++;if(tick%8===0){const gain=rate()/7.5;s.scrap+=gain;s.total+=gain;updateStats();if(tick%120===0)save()}draw();requestAnimationFrame(animate)}function canvasPoint(e){const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*canvas.width,y:(e.clientY-r.top)/r.height*canvas.height}}canvas.addEventListener('pointermove',e=>{pointerPos=canvasPoint(e);if(pendingPlacement)draw()});canvas.addEventListener('pointerdown',e=>{const {x,y}=canvasPoint(e);pointerPos={x,y};if(!pendingPlacement){const tile=s.placed.find(q=>q.id==='conveyor'&&Math.abs(q.x-x)<=15&&Math.abs(q.y-y)<=10);if(tile){const dirs=['R','D','L','U'],next=dirs[(dirs.indexOf(tile.dir||'R')+1)%dirs.length];tile.dir=next;save();draw();notify('This conveyor now flows '+({R:'right →',D:'down ↓',L:'left ←',U:'up ↑'}[next])+'.');return}}if(pendingPlacement){if(x<38||x>582||y<82||y>272){notify('Choose a tile inside the grid.');draw();return}const p=snapGrid({x,y});if(Math.hypot(p.x-x,p.y-y)>20){notify('Tap near the center of a grid tile.');return}if(s.placed.some(q=>q.x===p.x&&q.y===p.y)){notify('That tile is occupied. Belts and machines each use one tile.');draw();return}const id=pendingPlacement,d=machines.find(m=>m.id===id),price=cost(d,'machine');if(s.scrap<price){pendingPlacement=null;render();draw();notify('Not enough scrap to install that item.');return}s.scrap-=price;const tile={id,x:p.x,y:p.y};if(id==='conveyor'){const adjacent=s.placed.filter(q=>q.id==='conveyor'&&((Math.abs(q.x-p.x)===gridDX&&q.y===p.y)||(Math.abs(q.y-p.y)===gridDY&&q.x===p.x)));const upstream=adjacent.find(q=>(q.x===p.x&&q.y===p.y-gridDY)||(q.x===p.x-gridDX&&q.y===p.y));const neighbor=upstream||adjacent[0];if(neighbor){if(neighbor.x===p.x&&neighbor.y<p.y)tile.dir='D';else if(neighbor.x===p.x&&neighbor.y>p.y)tile.dir='U';else if(neighbor.x<p.x&&neighbor.y===p.y)tile.dir='R';else if(neighbor.x>p.x&&neighbor.y===p.y)tile.dir='L';else tile.dir=neighbor.dir||'R'}else tile.dir='R'}s.placed.push(tile);s.machines[id]=(s.machines[id]||0)+1;pendingPlacement=null;render();draw();save();notify(id==='conveyor'?'Conveyor placed and aligned to nearby belt flow. Tap a belt to rotate its direction.':d.name+' installed. Adjacent conveyor belts connect automatically.');return}if(x>75&&x<235&&y>95&&y<184)bonus()});render();draw();animate();save();if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js?v=23').catch(()=>{});document.addEventListener('visibilitychange',()=>{if(document.hidden)save();else{const secs=Math.max(0,Math.min(28800,(Date.now()-(s.last||Date.now()))/1000));if(secs>2){const gain=rate()*secs;s.scrap+=gain;s.total+=gain;notify('Back to work! +'+fmt(gain)+' scrap earned.')}render();save()}});
 })();
 </script></body></html>
