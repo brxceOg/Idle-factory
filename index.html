@@ -162,7 +162,7 @@ for (let routeIndex=0; routeIndex<beltRoutes.length; routeIndex++) {
  const crossingMarks=[];let cumulative=0;for(let ri=0;ri<route.length-1;ri++){cumulative+=Math.hypot(route[ri].ex.x-route[ri].p.x,route[ri].ex.y-route[ri].p.y)+Math.hypot(route[ri].p.x-(ri?route[ri-1].ex.x:route[ri].ep.x),route[ri].p.y-(ri?route[ri-1].ex.y:route[ri].ep.y));crossingMarks.push(cumulative)}
  if(!s.crossingPhases)s.crossingPhases={};
  const phaseKey='r'+routeIndex,previous=(s.crossingPhases[phaseKey]===undefined?travel:s.crossingPhases[phaseKey]);
- if(tick>1){let passed=0;for(const mark of crossingMarks){const prevD=previous,nowD=travel;const wrap=nowD<prevD; if((!wrap&&mark>prevD&&mark<=nowD)||(wrap&&(mark>prevD||mark<=nowD)))passed++;}if(passed){const payout=passed*.015;s.scrap+=payout;s.total+=payout;if(tick%8===0)updateStats();}}
+ if(tick>1){let passed=0;for(let chip=0;chip<count;chip++){const oldD=(previous+chip*spacing)%total,nowD=(travel+chip*spacing)%total,wrap=nowD<oldD;for(const mark of crossingMarks){if((!wrap&&mark>oldD&&mark<=nowD)||(wrap&&(mark>oldD||mark<=nowD)))passed++;}}if(passed){const payout=passed*.015;s.scrap+=payout;s.total+=payout;if(tick%8===0)updateStats();}}
  s.crossingPhases[phaseKey]=travel;
  for (let n = 0; n < count; n++) {
   let d = (travel + n * spacing) % total;
