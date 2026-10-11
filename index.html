@@ -91,15 +91,18 @@ if(p.id==='conveyor'){
  const beltNeighbors=neighbors.filter(q=>q.p.id==='conveyor');
  const machineNeighbors=neighbors.filter(q=>q.p.id!=='conveyor');
  const flow=p.dir||'R',horizontal=flow==='L'||flow==='R';
- /* Full-tile belt plates touch edge-to-edge on the grid; no little bridge pieces. */
+ const beltOnSide=dir=>beltNeighbors.some(q=>q.dir===dir);
+ /* Draw the belt bed edge-to-edge, then only draw the OUTER rails of the
+    connected belt shape. Shared tile borders disappear, including at turns. */
  R(x-16,y-12,32,24,'#344b3d');R(x-15,y-11,30,22,'#607b5d');R(x-13,y-9,26,18,'#283f36');
+ if(!beltOnSide('U'))R(x-16,y-12,32,2,'#d7bd69');
+ if(!beltOnSide('D'))R(x-16,y+10,32,2,'#d7bd69');
+ if(!beltOnSide('L'))R(x-16,y-12,2,24,'#d7bd69');
+ if(!beltOnSide('R'))R(x+14,y-12,2,24,'#d7bd69');
+ /* Keep the direction-specific belt ribs inside the rail area. */
  if(horizontal){
-  R(x-16,y-10,32,2,'#d7bd69');R(x-16,y+8,32,2,'#d7bd69');
-  /* Static belt ribs: moving slats per tile looked like they reset/bounced at joins. */
   for(let q=0;q<5;q++){const bx=x-10+q*5;R(bx,y-5,2,10,q%2?'#8fa27b':'#aebd91')}
  }else{
-  R(x-14,y-12,2,24,'#d7bd69');R(x+12,y-12,2,24,'#d7bd69');
-  /* Static ribs keep the belt texture from appearing to reverse at tile edges. */
   for(let q=0;q<4;q++){const by=y-7+q*5;R(x-5,by,10,2,q%2?'#8fa27b':'#aebd91')}
  }
  for(const q of machineNeighbors){
