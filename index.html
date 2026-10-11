@@ -59,17 +59,25 @@ const placed=Array.isArray(s.placed)?s.placed:[],feedXs=[];
 for(let row=0;row<gridRows;row++)for(let col=0;col<gridCols;col++){const gx=gridX+col*gridDX,gy=gridY+row*gridDY;R(gx-15,gy-11,30,22,'#b9b18a');R(gx-14,gy-10,28,20,'#c8c29a');R(gx-14,gy-10,28,1,'#e1d6ac');}
 const occupiedAt=(x,y)=>placed.find(q=>q.x===x&&q.y===y);
 const beltAnim=new Map(),beltRoutes=[],beltTiles=placed.filter(q=>q.id==='conveyor'),beltAt=(x,y)=>beltTiles.find(q=>q.x===x&&q.y===y),dirDelta={R:[gridDX,0],L:[-gridDX,0],D:[0,gridDY],U:[0,-gridDY]},opposite={R:'L',L:'R',D:'U',U:'D'};
+/* Build one centerline polyline per connected stream. A tile only passes items
+   to its outgoing neighbor when that neighbor accepts the flow from this edge.
+   Each tile contributes its entry edge, center and exit edge; the shared edge
+   coordinates are identical, so straight runs cannot jump or sag at joins. */
 const hasIncoming=p=>beltTiles.some(q=>{if(q===p)return false;const d=q.dir||'R',delta=dirDelta[d]||dirDelta.R;return q.x+delta[0]===p.x&&q.y+delta[1]===p.y});
 const seenBelts=new Set();
 function buildBeltRoute(start){
  const route=[];let p=start,guard=0;
  while(p&&!seenBelts.has(p)&&guard++<beltTiles.length+1){
-  seenBelts.add(p);const flow=p.dir||'R',prev=route.length?route[route.length-1]:null;
+  const flow=p.dir||'R',prev=route.length?route[route.length-1]:null;
   const entry=prev?(prev.x<p.x?'L':prev.x>p.x?'R':prev.y<p.y?'U':'D'):opposite[flow];
   const ep=entry==='L'?{x:p.x-16,y:p.y}:entry==='R'?{x:p.x+16,y:p.y}:entry==='U'?{x:p.x,y:p.y-12}:{x:p.x,y:p.y+12};
   const ex=flow==='L'?{x:p.x-16,y:p.y}:flow==='R'?{x:p.x+16,y:p.y}:flow==='U'?{x:p.x,y:p.y-12}:{x:p.x,y:p.y+12};
-  const seg={p,entry,flow,ep,ex,idx:route.length};route.push(seg);beltAnim.set(p,seg);
-  const delta=dirDelta[flow],next=beltAt(p.x+delta[0],p.y+delta[1]);if(!next||seenBelts.has(next))break;/* A belt facing back toward the tile it receives from creates a false out-and-back path. Treat that as a blocked join instead of animating a bounce. */const nextFlow=next.dir||'R';if(nextFlow===opposite[flow])break;p=next;
+  const seg={p,entry,flow,ep,ex,idx:route.length};route.push(seg);beltAnim.set(p,seg);seenBelts.add(p);
+  const delta=dirDelta[flow],next=beltAt(p.x+delta[0],p.y+delta[1]);
+  if(!next||seenBelts.has(next))break;
+  /* Do not enter a belt through the side it is trying to send material out of. */
+  if((next.dir||'R')===opposite[flow])break;
+  p=next;
  }
  if(route.length){route.forEach((seg,i)=>{seg.route=route;seg.routeLen=route.length;seg.offset=i;});beltRoutes.push(route);}
 }
@@ -119,25 +127,24 @@ ctx.restore();
 }
 ctx.save();ctx.translate(x,y);ctx.scale(.38,.38);ctx.translate(-x,-y);R(x-17,y-17,5,3,'#263f34');R(x-16,y-16,3,1,tick%20<10?'#b9e769':'#52775a');ctx.restore();
 }
-/* One continuous distance-based stream using straight centerline segments only.
-   Never curve or arc chips toward a tile edge: on straight runs they cross each
-   belt edge-to-edge on the same line; a direction change is a clean corner at
-   the tile center, then the stream continues along the outgoing belt direction. */
+/* Material is drawn as small square pieces on a single shared centerline.
+   Distance is measured across the entire route, not reset per tile. */
 for(const route of beltRoutes){
  const path=[];
- const add=(pt)=>{const last=path[path.length-1];if(!last||Math.hypot(last.x-pt.x,last.y-pt.y)>.001)path.push({x:pt.x,y:pt.y,d:0});};
+ const add=(pt)=>{const last=path[path.length-1];if(!last||Math.abs(last.x-pt.x)>.001||Math.abs(last.y-pt.y)>.001)path.push({x:pt.x,y:pt.y,d:0});};
  for(const seg of route){add(seg.ep);add(seg.p);add(seg.ex);}
  if(path.length<2)continue;
  let total=0;
  for(let i=1;i<path.length;i++){total+=Math.hypot(path[i].x-path[i-1].x,path[i].y-path[i-1].y);path[i].d=total;}
  if(total<1)continue;
- const spacing=14,speed=1.6,count=Math.ceil(total/spacing),travel=(tick*speed)%total;
+ const spacing=12,speed=1.25,count=Math.ceil(total/spacing),travel=(tick*speed)%total;
  for(let n=0;n<count;n++){
   const d=(travel+n*spacing)%total;let lo=1,hi=path.length-1;
   while(lo<hi){const mid=(lo+hi)>>1;if(path[mid].d<d)lo=mid+1;else hi=mid;}
   const a=path[lo-1],b=path[lo],len=b.d-a.d,t=len?(d-a.d)/len:0;
   const x=a.x+(b.x-a.x)*t,y=a.y+(b.y-a.y)*t;
-  R(x-2,y-2,4,4,n%2?'#d8bd69':'#fff0a0');
+  /* A consistent 3x3 chip is the only moving material cue. */
+  R(x-1.5,y-1.5,3,3,n%2?'#e7c85e':'#fff0a0');
  }
 }
 /* Only installed machines have a lit status lamp and moving operating parts. */
