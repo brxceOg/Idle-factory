@@ -60,16 +60,45 @@ for(let row=0;row<gridRows;row++)for(let col=0;col<gridCols;col++){const gx=grid
 const occupiedAt=(x,y)=>placed.find(q=>q.x===x&&q.y===y);
 for(const p of placed){const d=machines.find(m=>m.id===p.id);if(!d)continue;const x=p.x,y=p.y;
 if(p.id==='conveyor'){
-/* Belt tile connectors are drawn toward each neighboring belt or machine. */
+/* Draw a continuous belt lane through each occupied neighboring tile. */
 const neighbors=[[-gridDX,0,'L'],[gridDX,0,'R'],[0,-gridDY,'U'],[0,gridDY,'D']].map(([dx,dy,dir])=>({p:occupiedAt(x+dx,y+dy),dir})).filter(q=>q.p);
-R(x-15,y-10,30,20,'#344b3d');for(const q of neighbors){if(q.dir==='L')R(x-15,y-4,15,8,'#607b5d');if(q.dir==='R')R(x,y-4,15,8,'#607b5d');if(q.dir==='U')R(x-4,y-10,8,10,'#607b5d');if(q.dir==='D')R(x-4,y,8,10,'#607b5d')}
+const beltNeighbors=neighbors.filter(q=>q.p.id==='conveyor');
 const machineNeighbors=neighbors.filter(q=>q.p.id!=='conveyor');
-for(const q of machineNeighbors){if(q.dir==='L')R(x-15,y-3,6,6,'#e8bd57');if(q.dir==='R')R(x+9,y-3,6,6,'#e8bd57');if(q.dir==='U')R(x-3,y-10,6,6,'#e8bd57');if(q.dir==='D')R(x-3,y+4,6,6,'#e8bd57')}
-R(x-13,y-7,26,14,'#283f36');R(x-13,y-9,26,2,'#d7bd69');R(x-13,y+7,26,2,'#d7bd69');
+R(x-15,y-10,30,20,'#344b3d');
+R(x-13,y-7,26,14,'#283f36');
+R(x-13,y-9,26,2,'#d7bd69');R(x-13,y+7,26,2,'#d7bd69');
 for(let q=0;q<4;q++){const bx=x-11+((tick*1.05+q*7)%22);R(bx,y-5,4,10,q%2?'#d8bd69':'#b9c99a')}
-/* Animated material chips travel out of adjacent machines and along connected belts. */
-if(machineNeighbors.length){const phase=(tick%48)/48,q=machineNeighbors[Math.floor(tick/48)%machineNeighbors.length];let mx=x,my=y;if(q.dir==='L')mx=x-13+phase*9;if(q.dir==='R')mx=x+13-phase*9;if(q.dir==='U')my=y-9+phase*6;if(q.dir==='D')my=y+9-phase*6;R(mx-2,my-2,4,4,'#fff0a0')}
-if(neighbors.some(q=>q.p.id==='conveyor')){const dirs=neighbors.filter(q=>q.p.id==='conveyor');const q=dirs[Math.floor(tick/40)%dirs.length],phase=(tick%40)/40;let mx=x,my=y;if(q.dir==='L')mx=x-12+phase*8;if(q.dir==='R')mx=x+12-phase*8;if(q.dir==='U')my=y-8+phase*5;if(q.dir==='D')my=y+8-phase*5;R(mx-2,my-2,4,4,'#e8bd57')}
+/* Arms are drawn AFTER the center so the tracks visibly meet and don't get covered. */
+for(const q of neighbors){
+ if(q.dir==='L'){R(x-16,y-5,5,10,'#344b3d');R(x-16,y-3,5,6,'#607b5d')}
+ if(q.dir==='R'){R(x+11,y-5,5,10,'#344b3d');R(x+11,y-3,5,6,'#607b5d')}
+ if(q.dir==='U'){R(x-5,y-12,10,5,'#344b3d');R(x-3,y-12,6,5,'#607b5d')}
+ if(q.dir==='D'){R(x-5,y+7,10,5,'#344b3d');R(x-3,y+7,6,5,'#607b5d')}
+}
+for(const q of machineNeighbors){
+ if(q.dir==='L')R(x-14,y-3,4,6,'#e8bd57');
+ if(q.dir==='R')R(x+10,y-3,4,6,'#e8bd57');
+ if(q.dir==='U')R(x-3,y-9,6,4,'#e8bd57');
+ if(q.dir==='D')R(x-3,y+5,6,4,'#e8bd57');
+}
+/* A chip travels from the belt center toward a connected belt tile each cycle. */
+if(beltNeighbors.length){
+ const q=beltNeighbors[Math.floor(tick/36)%beltNeighbors.length],phase=(tick%36)/36;
+ let mx=x,my=y;
+ if(q.dir==='L')mx=x-13+phase*8;
+ if(q.dir==='R')mx=x+13-phase*8;
+ if(q.dir==='U')my=y-9+phase*5;
+ if(q.dir==='D')my=y+9-phase*5;
+ R(mx-2,my-2,4,4,'#fff0a0');
+}else if(machineNeighbors.length){
+ const q=machineNeighbors[Math.floor(tick/48)%machineNeighbors.length],phase=(tick%48)/48;
+ let mx=x,my=y;
+ if(q.dir==='L')mx=x-13+phase*8;
+ if(q.dir==='R')mx=x+13-phase*8;
+ if(q.dir==='U')my=y-9+phase*5;
+ if(q.dir==='D')my=y+9-phase*5;
+ R(mx-2,my-2,4,4,'#fff0a0');
+}
 }else{
 /* Each machine uses its own silhouette, scaled down to leave room for more builds. */
 ctx.save();ctx.translate(x,y);ctx.scale(.38,.38);ctx.translate(-x,-y);
