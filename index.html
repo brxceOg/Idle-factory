@@ -135,16 +135,9 @@ ctx.save();ctx.translate(x,y);ctx.scale(.38,.38);ctx.translate(-x,-y);R(x-17,y-1
    shared edge, reaches that tile's center, then follows its outgoing direction.
    The direction changes only at the next tile center; no curve/easing is used. */
 for (const route of beltRoutes) {
- /* Only animate routes that are physically fed by a machine. Loose belts and
-    disconnected belt chains stay visually idle instead of inventing material. */
- const hasMaterialSource = route.some(seg => {
-  const p = seg.p;
-  return [[-gridDX,0],[gridDX,0],[0,-gridDY],[0,gridDY]].some(([dx,dy]) => {
-   const neighbor = placed.find(q => q.x === p.x + dx && q.y === p.y + dy);
-   return neighbor && neighbor.id !== 'conveyor';
-  });
- });
- if (!hasMaterialSource) continue;
+ /* A conveyor must connect to at least one other conveyor tile before
+    it can show moving material. A single isolated belt stays completely idle. */
+ if (route.length < 2) continue;
  const segments = [];
  let total = 0;
  for (let i = 0; i < route.length; i++) {
