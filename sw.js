@@ -1,4 +1,4 @@
-const CACHE = "little-factory-v3";
+const CACHE = "little-factory-v4";
 const FILES = ["./", "./index.html", "./manifest.webmanifest"];
 self.addEventListener("install", event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES))));
 self.addEventListener("activate", event => event.waitUntil((async () => { const keys = await caches.keys(); await Promise.all(keys.filter(key => key.startsWith("little-factory-") && key !== CACHE).map(key => caches.delete(key))); await self.clients.claim(); })()));
