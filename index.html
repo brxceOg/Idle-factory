@@ -127,16 +127,18 @@ ctx.restore();
 }
 ctx.save();ctx.translate(x,y);ctx.scale(.38,.38);ctx.translate(-x,-y);R(x-17,y-17,5,3,'#263f34');R(x-16,y-16,3,1,tick%20<10?'#b9e769':'#52775a');ctx.restore();
 }
-/* Draw material by sampling a shared route polyline. Keep every point on
-   the belt centerline and make direction changes at the tile center only. */
+/* Render material at a constant distance along each conveyor's flow axis.
+   A tile that turns the stream uses a single corner at its CENTER, not an
+   entry-edge-to-center half-run that visually dips inside the tile. */
 for(const route of beltRoutes){
  const path=[];
  const add=(pt)=>{const last=path[path.length-1];if(!last||Math.abs(last.x-pt.x)>.001||Math.abs(last.y-pt.y)>.001)path.push({x:pt.x,y:pt.y,d:0});};
  for(let i=0;i<route.length;i++){
   const seg=route[i],prev=route[i-1];
-  /* Entry is the exact shared edge with the prior tile; use the previous
-     exit point rather than recomputing a potentially mismatched coordinate. */
-  if(prev)add(prev.ex);else add(seg.ep);
+  if(!prev)add(seg.ep);
+  else add(prev.ex);
+  /* For straight-through tiles, centerline remains flat. For a direction
+     change, the corner is exactly the tile center, with no curve or overshoot. */
   add(seg.p);
   add(seg.ex);
  }
