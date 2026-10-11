@@ -1,0 +1,11 @@
+{
+  "name": "Little Factory",
+  "short_name": "Factory",
+  "description": "A tiny pixel-art idle factory.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#122322",
+  "theme_color": "#172b2b",
+  "icons": []
+}
