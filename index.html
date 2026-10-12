@@ -54,7 +54,13 @@ coffee:'<g shape-rendering="crispEdges"><rect x="15" y="20" width="32" height="3
 blueprint:'<g shape-rendering="crispEdges"><rect x="11" y="7" width="42" height="50" fill="'+p.blue+'"/><rect x="15" y="11" width="34" height="42" fill="'+p.dark+'"/><path d="M19 17h26M19 23h13M19 29h26M19 35h16" stroke="'+p.light+'" stroke-width="2"/><rect x="21" y="40" width="4" height="4" fill="'+p.cream+'"/><rect x="25" y="44" width="4" height="4" fill="'+p.cream+'"/><rect x="29" y="40" width="4" height="4" fill="'+p.cream+'"/><rect x="33" y="36" width="4" height="4" fill="'+p.lime+'"/><rect x="37" y="32" width="4" height="4" fill="'+p.lime+'"/><rect x="41" y="28" width="4" height="4" fill="'+p.lime+'"/><rect x="7" y="10" width="4" height="44" fill="'+p.gold+'"/><rect x="53" y="10" width="4" height="44" fill="'+p.gold+'"/><rect x="18" y="4" width="28" height="4" fill="'+p.cream+'"/></g>'
 };
 return '<svg class="itemArt" width="58" height="58" viewBox="0 0 64 64" role="img" aria-label="'+id+' pixel art" shape-rendering="crispEdges">'+tile+(art[id]||art.conveyor)+'</svg>';
-}function card(d,k){const owned=k==='machine'?(s.machines[d.id]||0):k==='worker'?(s.workers[d.id]||0):(s.research[d.id]?1:0),done=k==='research'&&owned,c=cost(d,k),currency=k==='machine'?'scrap':'money',balance=currency==='scrap'?s.scrap:(s.money||0),meta=k==='machine'?'+'+d.rate+' scrap/sec · Owned: '+owned:k==='worker'?'+'+Math.round(d.effect*100)+'% production · Owned: '+owned:(done?'RESEARCH COMPLETE':'Cost: $'+c.toFixed(2));return '<article class="card"><div class="ico">'+iconArt(d.id,k)+'</div><div class="info"><div class="title">'+d.name+'</div><div class="desc">'+d.desc+'</div><div class="meta">'+meta+'</div></div><button class="buy" data-kind="'+k+'" data-id="'+d.id+'" '+(done||balance<c?'disabled':'')+'>'+(done?'DONE':'BUY<br>'+(currency==='scrap'?fmt(c)+' ✦':'$'+c.toFixed(2)))+'</button></article>'}
+}const machineArtImages={};
+function drawMachineArt(id,x,y){
+ let img=machineArtImages[id];
+ if(!img){img=new Image();machineArtImages[id]=img;img.onload=()=>draw();img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(iconArt(id,'machine'));}
+ if(img.complete&&img.naturalWidth>0)ctx.drawImage(img,x-13,y-12,26,24);
+}
+function card(d,k){const owned=k==='machine'?(s.machines[d.id]||0):k==='worker'?(s.workers[d.id]||0):(s.research[d.id]?1:0),done=k==='research'&&owned,c=cost(d,k),currency=k==='machine'?'scrap':'money',balance=currency==='scrap'?s.scrap:(s.money||0),meta=k==='machine'?'+'+d.rate+' scrap/sec · Owned: '+owned:k==='worker'?'+'+Math.round(d.effect*100)+'% production · Owned: '+owned:(done?'RESEARCH COMPLETE':'Cost: $'+c.toFixed(2));return '<article class="card"><div class="ico">'+iconArt(d.id,k)+'</div><div class="info"><div class="title">'+d.name+'</div><div class="desc">'+d.desc+'</div><div class="meta">'+meta+'</div></div><button class="buy" data-kind="'+k+'" data-id="'+d.id+'" '+(done||balance<c?'disabled':'')+'>'+(done?'DONE':'BUY<br>'+(currency==='scrap'?fmt(c)+' ✦':'$'+c.toFixed(2)))+'</button></article>'}
 window.addEventListener('error',e=>{const box=document.getElementById('workshop');if(box){box.style.background='#203c35';box.innerHTML='<div style="padding:20px;color:#ffe5a0;font:14px monospace">Workshop script error: '+String(e.message||'unknown error').replace(/[<>]/g,'')+'. Reload this page and send me this message.</div>';} });
 function updateStats(){$('scrap').textContent=fmt(s.scrap);$('money').textContent='$'+(s.money||0).toFixed(2);$('rate').textContent=fmt(rate()*60);$('machineCount').textContent=count(s.machines);$('workerCount').textContent=count(s.workers)+' worker'+(count(s.workers)===1?'':'s');document.querySelectorAll('button[data-kind]').forEach(b=>{const k=b.dataset.kind,id=b.dataset.id,defs=k==='machine'?machines:k==='worker'?workers:research,d=defs.find(x=>x.id===id);if(!d)return;const owned=k==='machine'?(s.machines[id]||0):k==='worker'?(s.workers[id]||0):(s.research[id]?1:0),currency=k==='machine'?'scrap':'money',balance=currency==='scrap'?s.scrap:(s.money||0);b.disabled=(k==='research'&&owned>0)||balance<cost(d,k)})}function render(){$('machineCards').innerHTML=machines.map(d=>card(d,'machine')).join('');$('workerCards').innerHTML=workers.map(d=>card(d,'worker')).join('');$('researchCards').innerHTML=research.map(d=>card(d,'research')).join('');updateStats()}
 let lastBuyPointer=null;function purchaseButton(b){if(!b||b.disabled)return false;const k=b.dataset.kind,id=b.dataset.id,defs=k==='machine'?machines:k==='worker'?workers:research,d=defs.find(x=>x.id===id);if(!d)return false;if(k==='machine'&&pendingPlacement){notify('Place your selected machine first.');return false}const c=cost(d,k);const currency=k==='machine'?'scrap':'money',balance=currency==='scrap'?s.scrap:(s.money||0);if(balance<c||(k==='research'&&s.research[id])){updateStats();return false}if(k==='machine'){if(pendingPlacement){notify('Place your selected machine first.');return false}if(s.placed.length>=gridCols*gridRows){notify('Factory grid full! All tiles are occupied.');return false}pendingPlacement=id;render();draw();notify('Tap an empty factory-floor slot to place '+d.name+'. Cost is charged when installed.')}else{if(currency==='money')s.money=Math.max(0,(s.money||0)-c);else s.scrap-=c;if(k==='worker')s.workers[id]=(s.workers[id]||0)+1;else s.research[id]=true;render();draw();save();notify(d.name+' added to the workshop!')}return true}document.addEventListener('pointerup',e=>{const b=e.target.closest&&e.target.closest('button[data-kind]');if(!b)return;lastBuyPointer={button:b,time:Date.now()};purchaseButton(b)},true);document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('button[data-kind]');if(!b)return;if(lastBuyPointer&&lastBuyPointer.button===b&&Date.now()-lastBuyPointer.time<800){lastBuyPointer=null;return}purchaseButton(b)},true);
@@ -111,48 +117,16 @@ for(const p of beltTiles){if((!hasIncoming(p)||hasMachineFeed(p))&&!seenBelts.ha
 for(const p of beltTiles){if(!seenBelts.has(p))buildBeltRoute(p);}
 /* Draw machines first and conveyors last so a belt is never hidden by later machine artwork. */for(const p of [...placed.filter(q=>q.id!=='conveyor'),...placed.filter(q=>q.id==='conveyor')]){const d=machines.find(m=>m.id===p.id);if(!d)continue;const x=p.x,y=p.y;
 if(p.id==='conveyor'){
- /* Belts have a real direction. Connected belts keep their tracks aligned;
-    tapping a belt rotates it, and newly placed belts inherit nearby flow. */
- const neighbors=[[-gridDX,0,'L'],[gridDX,0,'R'],[0,-gridDY,'U'],[0,gridDY,'D']].map(([dx,dy,dir])=>({p:occupiedAt(x+dx,y+dy),dir})).filter(q=>q.p);
- const beltNeighbors=neighbors.filter(q=>q.p.id==='conveyor');
- const machineNeighbors=neighbors.filter(q=>q.p.id!=='conveyor');
- const flow=p.dir||'R',horizontal=flow==='L'||flow==='R';
- const beltOnSide=dir=>beltNeighbors.some(q=>q.dir===dir);
- /* Draw the belt bed edge-to-edge, then only draw the OUTER rails of the
-    connected belt shape. Shared tile borders disappear, including at turns. */
- R(x-16,y-12,32,24,'#344b3d');R(x-15,y-11,30,22,'#607b5d');R(x-13,y-9,26,18,'#283f36');
- if(!beltOnSide('U'))R(x-16,y-12,32,2,'#d7bd69');
- if(!beltOnSide('D'))R(x-16,y+10,32,2,'#d7bd69');
- if(!beltOnSide('L'))R(x-16,y-12,2,24,'#d7bd69');
- if(!beltOnSide('R'))R(x+14,y-12,2,24,'#d7bd69');
- /* Keep the direction-specific belt ribs inside the rail area. */
- if(horizontal){
-  for(let q=0;q<5;q++){const bx=x-10+q*5;R(bx,y-5,2,10,q%2?'#8fa27b':'#aebd91')}
- }else{
-  for(let q=0;q<4;q++){const by=y-7+q*5;R(x-5,by,10,2,q%2?'#8fa27b':'#aebd91')}
- }
- for(const q of machineNeighbors){
-  if(q.dir==='L')R(x-14,y-3,4,6,'#e8bd57');
-  if(q.dir==='R')R(x+10,y-3,4,6,'#e8bd57');
-  if(q.dir==='U')R(x-3,y-9,6,4,'#e8bd57');
-  if(q.dir==='D')R(x-3,y+5,6,4,'#e8bd57');
- }
- /* Direction arrow shows where items leave this tile. */
+ drawMachineArt('conveyor',x,y);
+ const flow=p.dir||'R';
  ctx.fillStyle='#fff0a0';ctx.beginPath();
- if(flow==='R'){ctx.moveTo(x+7,y);ctx.lineTo(x+2,y-4);ctx.lineTo(x+2,y+4)}
- else if(flow==='L'){ctx.moveTo(x-7,y);ctx.lineTo(x-2,y-4);ctx.lineTo(x-2,y+4)}
- else if(flow==='D'){ctx.moveTo(x,y+5);ctx.lineTo(x-4,y);ctx.lineTo(x+4,y)}
- else{ctx.moveTo(x,y-5);ctx.lineTo(x-4,y);ctx.lineTo(x+4,y)}
+ if(flow==='R'){ctx.moveTo(x+9,y);ctx.lineTo(x+4,y-4);ctx.lineTo(x+4,y+4)}
+ else if(flow==='L'){ctx.moveTo(x-9,y);ctx.lineTo(x-4,y-4);ctx.lineTo(x-4,y+4)}
+ else if(flow==='D'){ctx.moveTo(x,y+8);ctx.lineTo(x-4,y+3);ctx.lineTo(x+4,y+3)}
+ else{ctx.moveTo(x,y-8);ctx.lineTo(x-4,y-3);ctx.lineTo(x+4,y-3)}
  ctx.closePath();ctx.fill();
- }else{
-/* Each machine uses its own silhouette, scaled down to leave room for more builds. */
-ctx.save();ctx.translate(x,y);ctx.scale(.38,.38);ctx.translate(-x,-y);
-if(p.id==='press'){R(x-23,y-21,8,42,'#31483b');R(x+15,y-21,8,42,'#31483b');R(x-27,y-22,54,7,'#d1b866');R(x-22,y-19,44,4,'#78906b');R(x-18,y-13,36,8,'#4b6650');R(x-13,y-5,26,16,'#9ca982');R(x-10,y-2,20,10,'#d9c778');R(x-26,y+16,52,6,'#344a3b');R(x-20,y+12,40,4,'#e0c66d');const ram=tick%24<12?0:4;R(x-12,y-12+ram,24,9,'#506a55');R(x-8,y-9+ram,16,4,'#b6c59a')}
-else if(p.id==='belt'){R(x-31,y-13,62,26,'#344b3d');R(x-28,y-10,56,20,'#9aa681');R(x-25,y-7,50,14,'#344f42');R(x-25,y-11,50,3,'#d7bd69');R(x-25,y+8,50,3,'#d7bd69');for(let q=0;q<7;q++){const bx=x-22+((tick*2.1+q*8)%44);R(bx,y-5,5,10,q%2?'#d8bd69':'#b9c99a')}R(x-31,y-18,62,4,'#6b8061');R(x-31,y+15,62,4,'#6b8061')}
-else if(p.id==='smelter'){R(x-24,y-13,48,34,'#7c5b43');R(x-20,y-9,40,28,'#ba8551');R(x-17,y-6,34,23,'#684a3b');for(let by=y-7;by<y+14;by+=7){R(x-18,by,36,2,'#d09b5c');R(x-4,by+2,2,4,'#79513c')}R(x-12,y-3,24,15,'#382f2b');R(x-9,y,18,9,tick%16<8?'#ed873e':'#ffd56d');R(x-5,y+3,10,4,'#fff0a0');R(x-10,y-20,20,8,'#3b5141');R(x-7,y-25,14,8,'#667b5b');if(tick%12<6){R(x+18,y-17,3,4,'#fff0a0');R(x+23,y-21,3,4,'#f9c35d')}}
-else if(p.id==='assembler'){R(x-27,y-20,6,39,'#3b5343');R(x+21,y-20,6,39,'#3b5343');R(x-27,y-20,54,6,'#d5b85d');R(x-22,y-15,44,3,'#7d926d');R(x-19,y+9,38,8,'#6f8261');R(x-16,y+11,32,4,'#d7c47d');const ax=x+(tick%30<15?10:-10);R(ax-2,y-14,4,15,'#d5b85d');R(ax-7,y-3,14,4,'#e8c75c');R(ax-5,y+1,4,7,'#4d6b55');R(ax+2,y+1,4,7,'#4d6b55')}
-else if(p.id==='arm'){R(x-24,y+10,48,9,'#364d3e');R(x-18,y+6,36,5,'#d0b65d');R(x-10,y+1,20,6,'#5c795e');const a=Math.sin(tick*.12)*9;R(x-5,y-15,10,17,'#59765b');R(x-8,y-18,16,8,'#d2b45a');R(x-2+a,y-11,7,15,'#d5b85d');R(x+1+a,y-5,8,6,'#425b48');R(x+6+a,y-4,9,5,'#e0c36b');R(x+17+a,y-8,5,5,'#d8c16d');R(x+17+a,y-1,5,5,'#d8c16d')}
-ctx.restore();
+}else{
+ drawMachineArt(p.id,x,y);
 }
 ctx.save();ctx.translate(x,y);ctx.scale(.38,.38);ctx.translate(-x,-y);R(x-17,y-17,5,3,'#263f34');R(x-16,y-16,3,1,tick%20<10?'#b9e769':'#52775a');ctx.restore();
 }
