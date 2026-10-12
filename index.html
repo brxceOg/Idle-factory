@@ -67,11 +67,19 @@ function drawMachineArt(id,x,y,dir,connections){
  const border='#182c2b',shadow='#263f38',metal='#668477',light='#b8c7a0',cream='#f1d58a',gold='#e8aa50',orange='#d96f45',red='#a9483b',blue='#6caaa4',dark='#304b42',lime='#c3d878';
  const frame=typeof tick==='number'?tick:0, pulse=(frame%24<12),pressY=frame%36<18?0:2;
  if(id==='conveyor'){
-  R(-15,-11,30,22,border);R(-13,-9,26,18,shadow);R(-13,-8,26,4,metal);
-  R(-12,-4,24,11,dark);R(-12,7,24,3,gold);
-  /* Animated rollers travel along the belt; the frame is clipped to the tile. */
-  for(let q=-10+((frame>>1)%6);q<=10;q+=6){R(q,-3,3,9,cream);R(q+1,-2,1,7,light);}
-  R(-12,-10,24,2,light);R(-11,10,5,1,orange);R(6,10,5,1,orange);
+  /* Seamless tile: the belt surface fills the complete grid cell, so adjoining
+     tiles meet edge-to-edge like jigsaw pieces rather than using little couplers.
+     Track orientation follows flow while its ends reach the neighboring cell edges. */
+  if(vertical){
+   R(-16,-12,32,24,border);R(-13,-12,26,24,shadow);
+   R(-11,-12,22,24,dark);R(-11,-12,22,3,metal);R(-11,9,22,3,gold);
+   for(let q=-9+((frame>>1)%6);q<=8;q+=6){R(-9,q,18,3,cream);R(-8,q+1,16,1,light);}
+  }else{
+   R(-16,-12,32,24,border);R(-16,-10,32,20,shadow);
+   R(-16,-8,32,16,dark);R(-16,-8,3,16,metal);R(13,-8,3,16,gold);
+   for(let q=-14+((frame>>1)%6);q<=13;q+=6){R(q,-7,3,14,cream);R(q+1,-6,1,12,light);}
+   R(-16,-12,32,2,light);
+  }
  }else if(id==='belt'){
   R(-15,-11,30,22,border);R(-13,-9,26,18,metal);R(-12,-6,24,12,dark);
   R(-13,-9,26,3,gold);R(-13,6,26,3,gold);
@@ -101,31 +109,7 @@ function drawMachineArt(id,x,y,dir,connections){
  }else{
   R(-14,-10,28,20,border);R(-11,-8,22,16,metal);R(-8,-5,16,10,dark);
  }
- /* Puzzle-style flow couplers: only draw these where the route really connects.
-    Each stub reaches the edge of its grid cell; adjacent stubs overlap the gap,
-    making a continuous lane and a clear green signal for a valid connection. */
- if(id==='conveyor'&&connections){
-  const stub=(edge)=>{
-   let x1=0,y1=0,x2=0,y2=0;
-   if(edge==='L'){x1=-17;y1=0;x2=-10;y2=0}
-   else if(edge==='R'){x1=10;y1=0;x2=17;y2=0}
-   else if(edge==='U'){x1=0;y1=-16;x2=0;y2=-10}
-   else if(edge==='D'){x1=0;y1=10;x2=0;y2=16}
-   const horizontal=edge==='L'||edge==='R';
-   const left=Math.min(x1,x2),top=Math.min(y1,y2);
-   const w=horizontal?Math.abs(x2-x1)+1:9,horizontalH=horizontal?9:Math.abs(y2-y1)+1;
-   rect(x+left-(horizontal?0:4),y+top-(horizontal?4:0),w,horizontalH,border);
-   rect(x+left-(horizontal?0:2),y+top-(horizontal?2:0),w,horizontalH===9?5:horizontalH,connections.active?'#b9e769':gold);
-   if(connections.active){rect(x+left-(horizontal?0:1),y+top-(horizontal?1:0),w,horizontalH===9?1:horizontalH,'#efffa4');}
-  };
-  if(connections.inEdge)stub(connections.inEdge);
-  if(connections.outEdge)stub(connections.outEdge);
-  if(connections.inEdge||connections.outEdge){
-   /* tiny green joint marks sit on the tile edge when flow is correctly linked */
-   const edgeMark=e=>{if(e==='L')rect(x-17,y-2,3,4,lime);if(e==='R')rect(x+14,y-2,3,4,lime);if(e==='U')rect(x-2,y-16,4,3,lime);if(e==='D')rect(x-2,y+13,4,3,lime)};
-   if(connections.inEdge)edgeMark(connections.inEdge);if(connections.outEdge)edgeMark(connections.outEdge);
-  }
- }
+ /* Seamless conveyor tiles are drawn edge-to-edge above; no connector stubs. */
 }function card(d,k){const owned=k==='machine'?(s.machines[d.id]||0):k==='worker'?(s.workers[d.id]||0):(s.research[d.id]?1:0),done=k==='research'&&owned,c=cost(d,k),currency=k==='machine'?'scrap':'money',balance=currency==='scrap'?s.scrap:(s.money||0),meta=k==='machine'?'+'+d.rate+' scrap/sec · Owned: '+owned:k==='worker'?'+'+Math.round(d.effect*100)+'% production · Owned: '+owned:(done?'RESEARCH COMPLETE':'Cost: $'+c.toFixed(2));return '<article class="card"><div class="ico">'+iconArt(d.id,k)+'</div><div class="info"><div class="title">'+d.name+'</div><div class="desc">'+d.desc+'</div><div class="meta">'+meta+'</div></div><button class="buy" data-kind="'+k+'" data-id="'+d.id+'" '+(done||balance<c?'disabled':'')+'>'+(done?'DONE':'BUY<br>'+(currency==='scrap'?fmt(c)+' ✦':'$'+c.toFixed(2)))+'</button></article>'}
 window.addEventListener('error',e=>{const box=document.getElementById('workshop');if(box){box.style.background='#203c35';box.innerHTML='<div style="padding:20px;color:#ffe5a0;font:14px monospace">Workshop script error: '+String(e.message||'unknown error').replace(/[<>]/g,'')+'. Reload this page and send me this message.</div>';} });
 function updateStats(){$('scrap').textContent=fmt(s.scrap);$('money').textContent='$'+(s.money||0).toFixed(2);$('rate').textContent=fmt(rate()*60);$('machineCount').textContent=count(s.machines);$('workerCount').textContent=count(s.workers)+' worker'+(count(s.workers)===1?'':'s');document.querySelectorAll('button[data-kind]').forEach(b=>{const k=b.dataset.kind,id=b.dataset.id,defs=k==='machine'?machines:k==='worker'?workers:research,d=defs.find(x=>x.id===id);if(!d)return;const owned=k==='machine'?(s.machines[id]||0):k==='worker'?(s.workers[id]||0):(s.research[id]?1:0),currency=k==='machine'?'scrap':'money',balance=currency==='scrap'?s.scrap:(s.money||0);b.disabled=(k==='research'&&owned>0)||balance<cost(d,k)})}function render(){$('machineCards').innerHTML=machines.map(d=>card(d,'machine')).join('');$('workerCards').innerHTML=workers.map(d=>card(d,'worker')).join('');$('researchCards').innerHTML=research.map(d=>card(d,'research')).join('');updateStats()}
@@ -191,7 +175,7 @@ if(p.id==='conveyor'){
  const inFrom=beltTiles.find(q=>q!==p&&q.x+(dirDelta[q.dir||'R']||dirDelta.R)[0]===p.x&&q.y+(dirDelta[q.dir||'R']||dirDelta.R)[1]===p.y);
  const incomingEdge=inFrom?(inFrom.x<p.x?'L':inFrom.x>p.x?'R':inFrom.y<p.y?'U':'D'):(hasMachineFeed(p)?prevEdge:null);
  const outgoingEdge=outConnected?flow:null;
- drawMachineArt('conveyor',x,y,flow,{inEdge:incomingEdge,outEdge:outgoingEdge,active:!!(incomingEdge||outgoingEdge)});
+ drawMachineArt('conveyor',x,y,flow);
  ctx.fillStyle='#fff0a0';ctx.beginPath();
  if(flow==='R'){ctx.moveTo(x+9,y);ctx.lineTo(x+4,y-4);ctx.lineTo(x+4,y+4)}
  else if(flow==='L'){ctx.moveTo(x-9,y);ctx.lineTo(x-4,y-4);ctx.lineTo(x-4,y+4)}
