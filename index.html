@@ -157,7 +157,8 @@ for (let routeIndex=0; routeIndex<beltRoutes.length; routeIndex++) {
   }
  }
  if (total < 1) continue;
- const spacing = 12, speed = 1.25, count = Math.floor(total / spacing) + 1;
+ const spacing = 12, speed = Math.max(0, rate()) * spacing / 60, count = Math.floor(total / spacing) + 1;
+ /* One visible chip represents one scrap unit: advance by the production rate per frame, so the belt cannot outrun the factory's actual output. */
  const travel = (tick * speed) % total;
  /* Detect every individual scrap chip crossing from one belt tile to the next. */
  const crossingMarks=[];let cumulative=0;for(let ri=0;ri<route.length-1;ri++){cumulative+=Math.hypot(route[ri].ex.x-route[ri].p.x,route[ri].ex.y-route[ri].p.y)+Math.hypot(route[ri].p.x-(ri?route[ri-1].ex.x:route[ri].ep.x),route[ri].p.y-(ri?route[ri-1].ex.y:route[ri].ep.y));crossingMarks.push(cumulative)}
