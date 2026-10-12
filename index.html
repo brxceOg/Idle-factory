@@ -3,242 +3,112 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="theme-color" content="#172b2b">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Little Factory">
-<link rel="manifest" href="manifest.webmanifest">
-<title>Little Factory</title>
+<meta name="theme-color" content="#203a2d">
+<title>Idle Mining — Plains Prototype</title>
 <style>
-:root{--bg:#122322;--panel:#203c3a;--cream:#f7e8bd;--muted:#b9c9ad;--lime:#b9e769;--gold:#ffc85e}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--cream);font-family:ui-monospace,Menlo,monospace}body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);background:radial-gradient(ellipse at 50% 0%,#284b43,#122322 65%)}button{font:inherit;border:0;cursor:pointer;touch-action:manipulation}.destroyBtn{display:block;width:100%;margin:-3px 0 12px;padding:12px;border:2px solid #a56a50;border-radius:8px;background:#49352f;color:#ffe1bd;font-weight:900;letter-spacing:.6px;box-shadow:0 3px #251e1a}.destroyBtn.active{background:#8e302b;border-color:#ff9a78;color:#fff4d8;box-shadow:0 3px #4b1d1a;animation:demopulse 1.2s infinite alternate}@keyframes demopulse{from{filter:brightness(1)}to{filter:brightness(1.25)}}.app{max-width:760px;margin:auto;padding:14px 12px 28px}header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.logo{font-weight:1000;letter-spacing:-1.5px;font-size:clamp(24px,6vw,34px);text-shadow:3px 3px #42685b}.logo span{color:var(--lime)}.tag{font-size:9px;letter-spacing:1.5px;color:var(--muted);margin-top:6px}.save{font-size:10px;color:var(--lime);border:1px solid #52766a;border-radius:20px;padding:7px}.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-bottom:10px}.stat{background:var(--panel);border:2px solid #3c6056;border-radius:9px;padding:10px;box-shadow:0 3px #0b1918;min-width:0}.label{font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase}.value{font-weight:900;font-size:clamp(17px,4.7vw,24px);margin-top:5px;overflow:hidden;text-overflow:ellipsis}.sub{font-size:9px;color:#91ad98;margin-top:3px}.frame{border:3px solid #507567;border-radius:11px;background:#213c35;padding:6px;box-shadow:0 5px #0a1716;margin-bottom:12px}.framehead{display:flex;justify-content:space-between;padding:5px 5px 8px;font-size:10px;color:var(--muted)}.live{color:var(--lime)}canvas{display:block;width:100%;height:auto;aspect-ratio:1.55;image-rendering:pixelated;border-radius:5px;background:#719b68;touch-action:manipulation}.tip{font-size:10px;line-height:1.5;color:#c8d7b9;padding:8px 4px 2px}.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:9px}.tab{background:#1a302e;border:2px solid #39594f;border-radius:8px;padding:10px 4px;font-weight:900;font-size:11px;color:#b5c7ad}.tab.active{background:var(--lime);color:#213629;border-color:#e0ff9b}.head{display:flex;justify-content:space-between;margin:12px 2px 8px}.head h2{font-size:14px;margin:0}.head small{font-size:9px;color:var(--muted)}.cards{display:grid;grid-template-columns:1fr;gap:8px}.card{display:flex;align-items:center;gap:10px;background:var(--panel);border:2px solid #3b5d53;border-radius:10px;padding:10px;box-shadow:0 3px #0b1918}.ico{width:58px;height:58px;flex:0 0 58px;border-radius:7px;background:#304f45;display:grid;place-items:center;border:1px solid #537363}.itemArt{display:block;width:58px;height:58px;image-rendering:pixelated;filter:drop-shadow(0 2px 0 #142622)}.info{flex:1;min-width:0}.title{font-size:12px;font-weight:1000}.desc{font-size:10px;line-height:1.4;color:var(--muted);margin-top:4px}.meta{font-size:9px;color:var(--gold);margin-top:5px}.buy{background:var(--lime);color:#213629;border-radius:7px;padding:10px 8px;min-width:82px;font-size:10px;font-weight:1000;box-shadow:0 3px #789849}.buy:disabled{background:#40564b;color:#8da090;box-shadow:none}.primary{background:var(--gold);color:#352d1d;border-radius:8px;padding:12px;font-weight:1000;box-shadow:0 3px #9b7432}.actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}.actions button{flex:1;min-width:120px}.resetBtn{background:#583b35;color:#ffe1cf;border:2px solid #8b5546;border-radius:8px;padding:12px;font-weight:1000;box-shadow:0 3px #39231f}.resetHint{font-size:9px;line-height:1.5;color:var(--muted);text-align:center;margin-top:7px}.hidden{display:none!important}.note{text-align:center;color:#77958a;font-size:9px;line-height:1.6;margin-top:18px}.toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--cream);color:var(--bg);padding:11px 15px;border-radius:8px;font-weight:900;font-size:11px;transition:.18s;z-index:5;white-space:nowrap}.toast.show{opacity:1;transform:translate(-50%,0)}@media(min-width:560px){.cards{grid-template-columns:1fr 1fr}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}.app{padding-top:22px}}
+:root{color-scheme:dark;--ink:#f8edcf;--panel:#213b31;--edge:#55745a;--lime:#c8ed79;--gold:#ffcf68}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#14251f;color:var(--ink);font:14px ui-monospace,SFMono-Regular,Menlo,monospace}
+.app{max-width:1000px;margin:auto;padding:12px;display:grid;gap:10px}
+header,.stats,.actions,.tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+header{justify-content:space-between}.brand{font-weight:1000;font-size:clamp(21px,5vw,30px);letter-spacing:-1px}.brand span{color:var(--lime)}.tag{font-size:10px;color:#a7c2a6;margin-top:3px}
+.stat{flex:1;min-width:110px;background:var(--panel);border:2px solid var(--edge);border-radius:8px;padding:9px 11px;box-shadow:0 3px #0a1712}.label{font-size:9px;color:#aac3a6;text-transform:uppercase;letter-spacing:1px}.value{font-size:20px;font-weight:900;margin-top:5px}.sub{font-size:10px;color:#a6bba0;margin-top:2px}
+.panel{border:2px solid var(--edge);border-radius:10px;background:#1b3028;overflow:hidden;box-shadow:0 4px #0b1712}
+.world-head{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:10px 12px;font-size:11px;color:#b7cbb0}.live{color:var(--lime)}
+canvas{display:block;width:100%;height:min(62vh,560px);min-height:330px;background:#8ac9d1;image-rendering:pixelated;touch-action:pan-y}
+.actions{display:grid;grid-template-columns:1fr 1fr}.btn{border:2px solid #78945f;border-radius:8px;padding:13px 10px;background:#456638;color:#fff3cf;font-weight:900;box-shadow:0 3px #17291b}.btn:active{transform:translateY(2px);box-shadow:0 1px #17291b}.btn.stop{background:#753e35;border-color:#ba7860}.btn:disabled{opacity:.45}.hint{font-size:11px;line-height:1.55;color:#b4c7ad;padding:0 2px}.log{max-height:110px;overflow:auto;font-size:11px;line-height:1.6;color:#c4d3b8;padding:9px 12px}.log div+div{border-top:1px solid #314a3a}.pill{font-size:10px;padding:5px 7px;border:1px solid #59765d;border-radius:5px;color:#c9dfb7}
+@media(min-width:760px){.app{padding:18px}.layout{display:grid;grid-template-columns:minmax(0,1fr) 245px;gap:10px}.side{display:flex;flex-direction:column;gap:10px}.side .panel{height:fit-content}canvas{height:590px}.actions{grid-template-columns:1fr}}
 </style>
 </head>
-<body><main class="app">
-<header><div><div class="logo">LITTLE <span>FACTORY</span></div><div class="tag">SMALL MACHINES. BIG PLANS.</div></div><div class="save" id="saveStatus">● AUTO-SAVED</div></header>
-<div class="stats"><div class="stat"><div class="label">Scrap</div><div class="value" id="scrap">0</div><div class="sub">spend to grow</div></div><div class="stat"><div class="label">Money</div><div class="value" id="money">$0.00</div><div class="sub">earned from production</div></div><div class="stat"><div class="label">Per minute</div><div class="value" id="rate">0</div><div class="sub">scrap generated</div></div><div class="stat"><div class="label">Machines</div><div class="value" id="machineCount">1</div><div class="sub" id="workerCount">0 workers</div></div></div>
-<div class="frame"><div class="framehead"><span>FLOOR 01 / WORKSHOP</span><span class="live">● RUNNING</span></div><canvas id="factory" width="620" height="400" aria-label="Animated pixel-art factory. Tap the main machine for a bonus."></canvas><div class="tip">↳ Tap the main machine for a scrap bonus. Your workshop keeps working while you're away.</div></div><button id="destroyBtn" class="destroyBtn" aria-pressed="false">▧ DEMOLISH MODE: OFF</button>
-<nav class="tabs"><button class="tab active" data-tab="build">▦ BUILD</button><button class="tab" data-tab="workers">♟ WORKERS</button><button class="tab" data-tab="research">✦ RESEARCH</button></nav>
-<section id="buildPanel"><div class="head"><h2>Production line</h2><small>MAKE MORE. FASTER.</small></div><div class="cards" id="machineCards"></div></section>
-<section id="workersPanel" class="hidden"><div class="head"><h2>Hire a helper</h2><small>BUSY LITTLE PEOPLE</small></div><div class="cards" id="workerCards"></div></section>
-<section id="researchPanel" class="hidden"><div class="head"><h2>Workshop upgrades</h2><small>EVERY SECOND COUNTS</small></div><div class="cards" id="researchCards"></div></section>
-<div class="actions"><button class="primary" id="collectBtn">✦ COLLECT BONUS</button><button class="tab" id="saveBtn">SAVE NOW</button><button class="resetBtn" id="resetBtn">↺ RESET GAME</button></div><div class="resetHint">RESET GAME clears this device’s Little Factory save. It does not affect other devices.</div><div class="note">SAVED ON THIS DEVICE · OFFLINE PROGRESS CAPPED AT 8 HOURS<br>EARLY BUILD 0.1 · MORE MACHINES COMING SOON</div></main><div class="toast" id="toast"></div>
+<body>
+<div class="app">
+<header><div><div class="brand">IDLE <span>MINING</span></div><div class="tag">PLAINS FIELD TEST · PHASE 1</div></div><div class="pill" id="saveStatus">● LOCAL SAVE READY</div></header>
+<div class="stats">
+ <div class="stat"><div class="label">Cash</div><div class="value" id="cash">$0</div><div class="sub" id="runCash">$0 earned this run</div></div>
+ <div class="stat"><div class="label">Depth</div><div class="value" id="depth">0 m</div><div class="sub">Best: <span id="bestDepth">0 m</span></div></div>
+ <div class="stat"><div class="label">Workers</div><div class="value">1</div><div class="sub" id="workerState">Wandering</div></div>
+</div>
+<div class="layout">
+ <section class="panel">
+  <div class="world-head"><span>⛏ PLAINS MINE</span><span class="live" id="runState">● IDLE</span><span id="materialReadout">Dirt · $0</span></div>
+  <canvas id="world" aria-label="Pixel-art mining world"></canvas>
+  <div class="world-head"><span>Drag or use the buttons to explore vertically.</span><span id="tileReadout">32px tiles</span></div>
+ </section>
+ <aside class="side">
+  <div class="actions"><button class="btn" id="startBtn">▶ START MINING</button><button class="btn stop" id="stopBtn" disabled>■ STOP & RESET</button></div>
+  <div class="panel"><div class="world-head"><strong>FIELD NOTES</strong><span class="pill">AUTO-SELL</span></div><div class="log" id="log"><div>Welcome to the Plains. Your worker is taking a look around.</div></div></div>
+  <div class="panel"><div class="world-head"><strong>HOW TO PLAY</strong></div><div class="log">Start a run to send your worker underground. They mine reachable tiles one at a time. Dirt is worth $0; stone and ore pay out when broken. Stop whenever you want: cash is kept and excavated terrain is restored.</div></div>
+ </aside>
+</div>
+<div class="hint">Prototype note: run terrain is generated locally. Your cash and best depth are saved in this browser; saves do not sync between devices.</div>
+</div>
 <script>
-(function(){
-const $=id=>document.getElementById(id), fmt=n=>n>=1e9?(n/1e9).toFixed(2)+'B':n>=1e6?(n/1e6).toFixed(2)+'M':n>=1e4?(n/1e3).toFixed(1)+'K':Math.floor(n).toLocaleString();
-const machines=[{id:'conveyor',name:'Conveyor Belt',icon:'🟨',desc:'Place tiles to connect machines. Items travel along connected belts.',base:5,rate:0},{id:'press',name:'Scrap Press',icon:'⚙️',desc:'Clamps junk into valuable scrap.',base:12,rate:1},{id:'belt',name:'Sorting Belt',icon:'🟨',desc:'Separates useful bits from junk.',base:18,rate:2},{id:'smelter',name:'Pocket Smelter',icon:'🔥',desc:'Melts scrap into extra output.',base:75,rate:7},{id:'assembler',name:'Tiny Assembler',icon:'🧰',desc:'Builds useful parts automatically.',base:260,rate:22},{id:'arm',name:'Robo-Arm',icon:'🦾',desc:'A tireless arm keeps things moving.',base:900,rate:70}];
-const workers=[{id:'helper',name:'Workshop Helper',icon:'🧑‍🔧',desc:'Each helper boosts production by 5%.',base:35,effect:.05},{id:'engineer',name:'Tiny Engineer',icon:'👷',desc:'Boosts production by 15%.',base:180,effect:.15},{id:'foreman',name:'Shift Foreman',icon:'🦺',desc:'Boosts production by 35%.',base:700,effect:.35}];
-const research=[{id:'gears',name:'Better Gears',icon:'⚙️',desc:'All machines produce 25% faster.',base:90,effect:.25},{id:'coffee',name:'Worker Coffee',icon:'☕',desc:'Another 50% production boost.',base:350,effect:.5},{id:'blueprint',name:'Blueprints',icon:'📐',desc:'Permanent 2× production multiplier.',base:1500,effect:1}];
-const fresh=()=>({scrap:0,machines:{press:1},placed:[{id:'press',x:58,y:105}],workers:{},research:{},last:Date.now(),total:0,bonusTaps:0,conveyorIncome:0,deliveries:0,money:0});let s=fresh(),tab='build',toastTimer,pendingPlacement=null,destructionMode=false;
-try{const old=JSON.parse(localStorage.getItem('littleFactorySave'));if(old&&old.machines){s=Object.assign(fresh(),old);const secs=Math.max(0,Math.min(28800,(Date.now()-(s.last||Date.now()))/1000));const gain=machineRate()*secs;s.scrap+=gain;s.total+=gain;s.money=(s.money||0)+gain*.375;if(gain>0)setTimeout(()=>notify('Welcome back! +'+fmt(gain)+' scrap while away.'),400)}}catch(e){}
-const gridX=58,gridY=105,gridDX=32,gridDY=24,gridCols=16,gridRows=7;/* One-time make-good for the recent invisible-belt bug: refund the 5-scrap base conveyor cost once. */if(!localStorage.getItem('littleFactoryBeltRefund62')){s.scrap=(s.scrap||0)+5;localStorage.setItem('littleFactoryBeltRefund62','1');}function snapGrid(p){const col=Math.max(0,Math.min(gridCols-1,Math.round((p.x-gridX)/gridDX))),row=Math.max(0,Math.min(gridRows-1,Math.round((p.y-gridY)/gridDY)));return{x:gridX+col*gridDX,y:gridY+row*gridDY}}if(!Array.isArray(s.placed)){s.placed=[];for(const d of machines.filter(q=>q.id!=='conveyor'))for(let i=0;i<(s.machines[d.id]||0);i++){const n=s.placed.length;s.placed.push({id:d.id,x:gridX+(n%gridCols)*gridDX,y:gridY+(Math.floor(n/gridCols)%gridRows)*gridDY})}}else{s.placed=s.placed.map(p=>({...p,...snapGrid(p)}));if(!s.placed.length&&s.machines.press)s.placed.push({id:'press',x:gridX,y:gridY})}
-function count(obj){return Object.values(obj).reduce((a,b)=>a+b,0)}function machineRate(){let r=machines.reduce((a,d)=>a+(s.machines[d.id]||0)*d.rate,0);r*=1+workers.reduce((a,d)=>a+(s.workers[d.id]||0)*d.effect,0);r*=1+(s.research.gears?.25:0);r*=1+(s.research.coffee?.5:0);if(s.research.blueprint)r*=2;return r*0.22}function beltStats(){const belts=s.placed.filter(q=>q.id==='conveyor');const active=belts.filter(p=>belts.some(q=>q!==p&&Math.abs(q.x-p.x)+Math.abs(q.y-p.y)===gridDX)).length;const endX=gridX+(gridCols-1)*gridDX;const delivered=belts.some(p=>(p.dir||'R')==='R'&&p.x===endX&&p.y>=gridY+3*gridDY&&p.y<=gridY+5*gridDY&&belts.some(q=>q.x===p.x-gridDX&&q.y===p.y&&(q.dir||'R')==='R'));return{active,delivered}}function rate(){return machineRate()}
-function cost(d,kind){const n=kind==='machine'?(s.machines[d.id]||0):kind==='worker'?(s.workers[d.id]||0):(s.research[d.id]?1:0);return Math.floor(d.base*Math.pow(1.58,n))}
-function save(){s.last=Date.now();try{localStorage.setItem('littleFactorySave',JSON.stringify(s));$('saveStatus').textContent='● AUTO-SAVED'}catch(e){$('saveStatus').textContent='SAVE UNAVAILABLE'}}
-function notify(m){$('toast').textContent=m;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),2200)}
-function iconArt(id,k){
-const p={
-ink:'#182c2b',shadow:'#263f38',metal:'#668477',light:'#b8c7a0',cream:'#f1d58a',gold:'#e8aa50',orange:'#d96f45',red:'#a9483b',blue:'#6caaa4',paper:'#e7e1b7',dark:'#304b42',skin:'#dba477',hair:'#59463a',shirt:'#6c9b87',lime:'#c3d878'};
-const tile='<rect x="2" y="2" width="60" height="60" fill="'+p.ink+'" stroke="'+p.metal+'" stroke-width="2"/><path d="M6 6h8M6 6v8M50 58h8M58 50v8" stroke="'+p.dark+'" stroke-width="2"/>';
-const art={
-conveyor:'<g shape-rendering="crispEdges"><rect x="7" y="20" width="50" height="29" fill="'+p.shadow+'"/><rect x="7" y="17" width="50" height="8" fill="'+p.metal+'"/><rect x="10" y="25" width="44" height="16" fill="'+p.dark+'"/><rect x="10" y="42" width="44" height="5" fill="'+p.gold+'"/><rect x="13" y="28" width="5" height="11" fill="'+p.cream+'"/><rect x="23" y="28" width="5" height="11" fill="'+p.cream+'"/><rect x="33" y="28" width="5" height="11" fill="'+p.cream+'"/><rect x="43" y="28" width="5" height="11" fill="'+p.cream+'"/><rect x="10" y="49" width="7" height="5" fill="'+p.orange+'"/><rect x="47" y="49" width="7" height="5" fill="'+p.orange+'"/><rect x="23" y="8" width="18" height="5" fill="'+p.gold+'"/><rect x="28" y="13" width="8" height="4" fill="'+p.cream+'"/><rect x="18" y="13" width="5" height="4" fill="'+p.orange+'"/></g>',
-press:'<g shape-rendering="crispEdges"><rect x="9" y="9" width="9" height="45" fill="'+p.dark+'"/><rect x="46" y="9" width="9" height="45" fill="'+p.dark+'"/><rect x="6" y="8" width="52" height="8" fill="'+p.gold+'"/><rect x="10" y="8" width="44" height="3" fill="'+p.cream+'"/><rect x="19" y="17" width="26" height="6" fill="'+p.metal+'"/><rect x="22" y="23" width="20" height="12" fill="'+p.light+'"/><rect x="25" y="35" width="14" height="7" fill="'+p.orange+'"/><rect x="18" y="42" width="28" height="7" fill="'+p.gold+'"/><rect x="13" y="50" width="38" height="6" fill="'+p.metal+'"/><rect x="12" y="18" width="4" height="30" fill="'+p.light+'"/><rect x="48" y="18" width="4" height="30" fill="'+p.light+'"/></g>',
-belt:'<g shape-rendering="crispEdges"><rect x="6" y="18" width="52" height="29" fill="'+p.shadow+'"/><rect x="8" y="21" width="48" height="20" fill="'+p.dark+'"/><rect x="8" y="17" width="48" height="5" fill="'+p.gold+'"/><rect x="8" y="41" width="48" height="5" fill="'+p.gold+'"/><rect x="13" y="24" width="6" height="14" fill="'+p.blue+'"/><rect x="23" y="24" width="6" height="14" fill="'+p.blue+'"/><rect x="33" y="24" width="6" height="14" fill="'+p.blue+'"/><rect x="43" y="24" width="6" height="14" fill="'+p.blue+'"/><path d="M14 28h3m7 0h3m7 0h3m7 0h3" stroke="'+p.cream+'" stroke-width="2"/><rect x="11" y="48" width="8" height="6" fill="'+p.orange+'"/><rect x="45" y="48" width="8" height="6" fill="'+p.orange+'"/><rect x="20" y="9" width="24" height="5" fill="'+p.light+'"/><rect x="26" y="5" width="12" height="4" fill="'+p.cream+'"/></g>',
-smelter:'<g shape-rendering="crispEdges"><rect x="14" y="17" width="36" height="39" fill="'+p.shadow+'"/><rect x="18" y="21" width="28" height="30" fill="'+p.orange+'"/><rect x="22" y="25" width="20" height="22" fill="'+p.ink+'"/><rect x="25" y="36" width="5" height="8" fill="'+p.red+'"/><rect x="30" y="29" width="5" height="15" fill="'+p.orange+'"/><rect x="35" y="34" width="5" height="10" fill="'+p.cream+'"/><rect x="19" y="9" width="26" height="8" fill="'+p.metal+'"/><rect x="24" y="5" width="16" height="4" fill="'+p.light+'"/><rect x="27" y="2" width="10" height="3" fill="'+p.cream+'"/><rect x="10" y="52" width="44" height="5" fill="'+p.gold+'"/><rect x="20" y="24" width="3" height="6" fill="'+p.cream+'"/></g>',
-assembler:'<g shape-rendering="crispEdges"><rect x="9" y="13" width="46" height="43" fill="'+p.shadow+'"/><rect x="13" y="17" width="38" height="32" fill="'+p.metal+'"/><rect x="18" y="22" width="28" height="21" fill="'+p.ink+'"/><rect x="22" y="27" width="5" height="5" fill="'+p.lime+'"/><rect x="32" y="27" width="5" height="5" fill="'+p.lime+'"/><rect x="22" y="35" width="15" height="3" fill="'+p.blue+'"/><rect x="19" y="46" width="26" height="4" fill="'+p.gold+'"/><rect x="28" y="5" width="8" height="12" fill="'+p.gold+'"/><rect x="24" y="9" width="4" height="4" fill="'+p.cream+'"/><rect x="36" y="9" width="4" height="4" fill="'+p.cream+'"/><rect x="5" y="26" width="8" height="6" fill="'+p.orange+'"/><rect x="51" y="26" width="8" height="6" fill="'+p.orange+'"/></g>',
-arm:'<g shape-rendering="crispEdges"><rect x="8" y="49" width="48" height="8" fill="'+p.gold+'"/><rect x="16" y="43" width="32" height="7" fill="'+p.metal+'"/><rect x="25" y="28" width="10" height="17" fill="'+p.gold+'"/><rect x="30" y="22" width="16" height="9" fill="'+p.gold+'"/><rect x="38" y="15" width="9" height="10" fill="'+p.light+'"/><rect x="43" y="12" width="10" height="7" fill="'+p.orange+'"/><rect x="48" y="8" width="5" height="8" fill="'+p.cream+'"/><rect x="22" y="25" width="16" height="7" fill="'+p.gold+'"/><rect x="23" y="26" width="5" height="5" fill="'+p.orange+'"/><rect x="28" y="22" width="7" height="7" fill="'+p.blue+'"/><rect x="29" y="31" width="4" height="12" fill="'+p.cream+'"/><rect x="18" y="45" width="28" height="3" fill="'+p.light+'"/></g>',
-helper:'<g shape-rendering="crispEdges"><rect x="21" y="13" width="22" height="18" fill="'+p.skin+'"/><rect x="18" y="12" width="28" height="7" fill="'+p.hair+'"/><rect x="22" y="7" width="20" height="8" fill="'+p.hair+'"/><rect x="24" y="20" width="4" height="4" fill="'+p.ink+'"/><rect x="36" y="20" width="4" height="4" fill="'+p.ink+'"/><rect x="28" y="27" width="8" height="3" fill="'+p.orange+'"/><rect x="15" y="34" width="34" height="21" fill="'+p.shirt+'"/><rect x="22" y="33" width="20" height="6" fill="'+p.cream+'"/><rect x="26" y="39" width="12" height="10" fill="'+p.gold+'"/><rect x="10" y="39" width="5" height="12" fill="'+p.skin+'"/><rect x="49" y="39" width="5" height="12" fill="'+p.skin+'"/><rect x="18" y="55" width="10" height="4" fill="'+p.dark+'"/><rect x="36" y="55" width="10" height="4" fill="'+p.dark+'"/></g>',
-engineer:'<g shape-rendering="crispEdges"><rect x="21" y="16" width="22" height="17" fill="'+p.skin+'"/><rect x="17" y="13" width="30" height="7" fill="'+p.gold+'"/><rect x="22" y="7" width="20" height="7" fill="'+p.gold+'"/><rect x="25" y="10" width="14" height="3" fill="'+p.cream+'"/><rect x="24" y="22" width="4" height="4" fill="'+p.ink+'"/><rect x="36" y="22" width="4" height="4" fill="'+p.ink+'"/><rect x="29" y="29" width="7" height="3" fill="'+p.orange+'"/><rect x="13" y="36" width="38" height="20" fill="'+p.orange+'"/><rect x="20" y="36" width="24" height="6" fill="'+p.paper+'"/><rect x="25" y="43" width="14" height="9" fill="'+p.blue+'"/><rect x="8" y="40" width="5" height="12" fill="'+p.skin+'"/><rect x="51" y="40" width="5" height="12" fill="'+p.skin+'"/><rect x="17" y="56" width="11" height="3" fill="'+p.dark+'"/><rect x="36" y="56" width="11" height="3" fill="'+p.dark+'"/><rect x="44" y="32" width="7" height="4" fill="'+p.light+'"/></g>',
-foreman:'<g shape-rendering="crispEdges"><rect x="21" y="16" width="22" height="17" fill="'+p.skin+'"/><rect x="17" y="12" width="30" height="7" fill="'+p.cream+'"/><rect x="22" y="7" width="20" height="6" fill="'+p.gold+'"/><rect x="25" y="22" width="4" height="4" fill="'+p.ink+'"/><rect x="36" y="22" width="4" height="4" fill="'+p.ink+'"/><rect x="29" y="29" width="7" height="3" fill="'+p.hair+'"/><rect x="13" y="36" width="38" height="20" fill="'+p.metal+'"/><rect x="20" y="36" width="24" height="5" fill="'+p.cream+'"/><path d="M22 39l10 7 10-7" fill="none" stroke="'+p.gold+'" stroke-width="4" shape-rendering="crispEdges"/><rect x="8" y="40" width="5" height="12" fill="'+p.skin+'"/><rect x="51" y="40" width="5" height="12" fill="'+p.skin+'"/><rect x="17" y="56" width="11" height="3" fill="'+p.dark+'"/><rect x="36" y="56" width="11" height="3" fill="'+p.dark+'"/><rect x="44" y="32" width="7" height="4" fill="'+p.orange+'"/></g>',
-gears:'<g shape-rendering="crispEdges"><path d="M27 7h10v7h7v6h7v10h-7v7h-7v7H27v-7h-7v-7h-7V20h7v-6h7z" fill="'+p.gold+'"/><rect x="26" y="17" width="12" height="25" fill="'+p.cream+'"/><rect x="19" y="24" width="26" height="11" fill="'+p.cream+'"/><rect x="27" y="25" width="10" height="9" fill="'+p.ink+'"/><rect x="30" y="28" width="4" height="4" fill="'+p.blue+'"/><path d="M9 38h8v6h6v8h-8v-5H9z" fill="'+p.metal+'"/><rect x="13" y="42" width="8" height="8" fill="'+p.gold+'"/><rect x="16" y="45" width="3" height="3" fill="'+p.ink+'"/><rect x="44" y="8" width="9" height="9" fill="'+p.orange+'"/><rect x="47" y="11" width="3" height="3" fill="'+p.cream+'"/></g>',
-coffee:'<g shape-rendering="crispEdges"><rect x="15" y="20" width="32" height="32" fill="'+p.paper+'"/><rect x="19" y="24" width="24" height="22" fill="'+p.orange+'"/><rect x="47" y="27" width="8" height="17" fill="'+p.paper+'"/><rect x="50" y="30" width="5" height="10" fill="'+p.ink+'"/><rect x="19" y="48" width="24" height="4" fill="'+p.cream+'"/><rect x="23" y="29" width="16" height="12" fill="'+p.dark+'"/><rect x="26" y="32" width="10" height="5" fill="'+p.gold+'"/><rect x="23" y="13" width="4" height="7" fill="'+p.light+'"/><rect x="32" y="8" width="4" height="12" fill="'+p.light+'"/><rect x="41" y="13" width="4" height="7" fill="'+p.light+'"/><rect x="13" y="54" width="36" height="4" fill="'+p.metal+'"/><rect x="7" y="10" width="7" height="7" fill="'+p.gold+'"/></g>',
-blueprint:'<g shape-rendering="crispEdges"><rect x="11" y="7" width="42" height="50" fill="'+p.blue+'"/><rect x="15" y="11" width="34" height="42" fill="'+p.dark+'"/><path d="M19 17h26M19 23h13M19 29h26M19 35h16" stroke="'+p.light+'" stroke-width="2"/><rect x="21" y="40" width="4" height="4" fill="'+p.cream+'"/><rect x="25" y="44" width="4" height="4" fill="'+p.cream+'"/><rect x="29" y="40" width="4" height="4" fill="'+p.cream+'"/><rect x="33" y="36" width="4" height="4" fill="'+p.lime+'"/><rect x="37" y="32" width="4" height="4" fill="'+p.lime+'"/><rect x="41" y="28" width="4" height="4" fill="'+p.lime+'"/><rect x="7" y="10" width="4" height="44" fill="'+p.gold+'"/><rect x="53" y="10" width="4" height="44" fill="'+p.gold+'"/><rect x="18" y="4" width="28" height="4" fill="'+p.cream+'"/></g>'
+(()=> {
+'use strict';
+const TILE=32, COLS=28, ROWS=100, SAVE_KEY='idleMiningPhase1Save';
+const mats={
+ air:{solid:false,hp:0,value:0,color:'#000'},
+ grass:{solid:true,hp:7,value:0,color:'#68a84c'},
+ dirt:{solid:true,hp:8,value:0,color:'#9a633d'},
+ stone:{solid:true,hp:17,value:1,color:'#788078'},
+ coal:{solid:true,hp:15,value:3,color:'#343a38'},
+ copper:{solid:true,hp:23,value:6,color:'#c47c4c'},
+ iron:{solid:true,hp:30,value:12,color:'#a8aaa0'},
+ silver:{solid:true,hp:43,value:25,color:'#d4ded8'},
+ gold:{solid:true,hp:55,value:50,color:'#f3c64c'}
 };
-return '<svg class="itemArt" width="58" height="58" viewBox="0 0 64 64" role="img" aria-label="'+id+' pixel art" shape-rendering="crispEdges">'+tile+(art[id]||art.conveyor)+'</svg>';
-}const machineArtImages={};
-function drawMachineArt(id,x,y,dir,connections){
- /* Only called from the loop over s.placed, so unpurchased/unplaced shop items
-    never render on the factory floor. Tick-based motion stays lightweight on mobile. */
- const angle=dir==='D'?Math.PI/2:dir==='L'?Math.PI:dir==='U'?-Math.PI/2:0;
- const vertical=dir==='D'||dir==='U';
- const R=(dx,dy,w,h,col)=>{
-  const cx=dx+w/2,cy=dy+h/2,rx=Math.round(cx*Math.cos(angle)-cy*Math.sin(angle)),ry=Math.round(cx*Math.sin(angle)+cy*Math.cos(angle));
-  rect(x+rx-(vertical?h:w)/2,y+ry-(vertical?w:h)/2,vertical?h:w,vertical?w:h,col);
- };
- const border='#182c2b',shadow='#263f38',metal='#668477',light='#b8c7a0',cream='#f1d58a',gold='#e8aa50',orange='#d96f45',red='#a9483b',blue='#6caaa4',dark='#304b42',lime='#c3d878';
- const frame=typeof tick==='number'?tick:0, pulse=(frame%24<12),pressY=frame%36<18?0:2;
- if(id==='conveyor'){
-  /* EDGE-TO-EDGE TRACK: no end caps, no connector stubs. The belt lane
-     reaches the exact boundary of each 32x24 cell so neighboring tiles merge. */
-  if(vertical){
-   R(-16,-12,32,24,shadow);R(-11,-12,22,24,dark);
-   R(-16,-12,5,24,metal);R(11,-12,5,24,gold);
-   R(-16,-12,32,2,light);R(-16,10,32,2,border);
-   for(let q=-10+((frame>>1)%6);q<=10;q+=6){R(-8,q,16,3,cream);R(-7,q+1,14,1,light);}
-  }else{
-   R(-16,-12,32,24,shadow);R(-16,-8,32,16,dark);
-   R(-16,-12,32,4,metal);R(-16,8,32,4,gold);
-   R(-16,-12,2,24,light);R(14,-12,2,24,border);
-   for(let q=-13+((frame>>1)%6);q<=13;q+=6){R(q,-7,3,14,cream);R(q+1,-6,1,12,light);}
-  }
- }else if(id==='belt'){
-  R(-15,-11,30,22,border);R(-13,-9,26,18,metal);R(-12,-6,24,12,dark);
-  R(-13,-9,26,3,gold);R(-13,6,26,3,gold);
-  for(let q=-10+((frame>>1)%6);q<=10;q+=6){R(q,-5,3,10,blue);R(q,-4,3,2,light);}
-  R(-7,-10,14,2,cream);
- }else if(id==='press'){
-  R(-14,-11,28,22,border);R(-11,-9,5,17,metal);R(6,-9,5,17,metal);
-  R(-13,-10,26,4,gold);R(-10,-8,20,2,cream);R(-7,-4+pressY,14,4,light);
-  R(-6,pressY,12,5,metal);R(-5,2+pressY,10,5,orange);R(-13,7,26,3,gold);R(-9,10,18,1,cream);
- }else if(id==='smelter'){
-  R(-13,-11,26,22,border);R(-11,-8,22,17,shadow);R(-9,-6,18,14,orange);
-  R(-6,-3,12,9,border);R(-4,2,4,4,red);R(-1+(pulse?1:0),-2,4,8,orange);R(4,1+(pulse?-1:1),3,5,cream);
-  R(-8,-10,16,3,metal);R(-5,-11,10,2,light);R(-11,8,22,3,gold);
-  /* Heat shimmer and a small changing spark above the furnace. */
-  R(-3,-14,3,pulse?3:1,pulse?cream:orange);R(3,-13,pulse?2:4,2,light);
- }else if(id==='assembler'){
-  R(-14,-11,28,22,border);R(-12,-9,24,17,metal);R(-9,-6,18,11,dark);
-  R(-7,-4,4,4,pulse?lime:blue);R(3,-4,4,4,pulse?blue:lime);R(-6,2,12,2,pulse?blue:light);
-  R(-9,7,18,3,gold);R(-4,-11,8,4,cream);R(-2,-10,4,3,orange);
-  R(-15,-2,3,6,orange);R(12,-2,3,6,orange);
- }else if(id==='arm'){
-  R(-15,7,30,4,border);R(-13,7,26,2,gold);
-  /* Robot arm swings between two small, readable poses. */
-  if(pulse){R(-3,-3,7,12,gold);R(-5,-4,11,4,metal);R(1,-8,10,6,gold);R(6,-11,8,5,orange);R(8,-10,4,3,cream);R(-2,-1,4,8,cream);}
-  else{R(-4,-4,7,12,gold);R(-6,-5,11,4,metal);R(-7,-9,10,6,gold);R(-11,-11,8,5,orange);R(-11,-10,4,3,cream);R(-3,-2,4,8,cream);}
-  R(-12,10,24,1,light);
- }else{
-  R(-14,-10,28,20,border);R(-11,-8,22,16,metal);R(-8,-5,16,10,dark);
- }
- /* Seamless conveyor tiles are drawn edge-to-edge above; no connector stubs. */
-}function card(d,k){const owned=k==='machine'?(s.machines[d.id]||0):k==='worker'?(s.workers[d.id]||0):(s.research[d.id]?1:0),done=k==='research'&&owned,c=cost(d,k),currency=k==='machine'?'scrap':'money',balance=currency==='scrap'?s.scrap:(s.money||0),meta=k==='machine'?'+'+d.rate+' scrap/sec · Owned: '+owned:k==='worker'?'+'+Math.round(d.effect*100)+'% production · Owned: '+owned:(done?'RESEARCH COMPLETE':'Cost: $'+c.toFixed(2));return '<article class="card"><div class="ico">'+iconArt(d.id,k)+'</div><div class="info"><div class="title">'+d.name+'</div><div class="desc">'+d.desc+'</div><div class="meta">'+meta+'</div></div><button class="buy" data-kind="'+k+'" data-id="'+d.id+'" '+(done||balance<c?'disabled':'')+'>'+(done?'DONE':'BUY<br>'+(currency==='scrap'?fmt(c)+' ✦':'$'+c.toFixed(2)))+'</button></article>'}
-window.addEventListener('error',e=>{const box=document.getElementById('workshop');if(box){box.style.background='#203c35';box.innerHTML='<div style="padding:20px;color:#ffe5a0;font:14px monospace">Workshop script error: '+String(e.message||'unknown error').replace(/[<>]/g,'')+'. Reload this page and send me this message.</div>';} });
-function updateStats(){$('scrap').textContent=fmt(s.scrap);$('money').textContent='$'+(s.money||0).toFixed(2);$('rate').textContent=fmt(rate()*60);$('machineCount').textContent=count(s.machines);$('workerCount').textContent=count(s.workers)+' worker'+(count(s.workers)===1?'':'s');document.querySelectorAll('button[data-kind]').forEach(b=>{const k=b.dataset.kind,id=b.dataset.id,defs=k==='machine'?machines:k==='worker'?workers:research,d=defs.find(x=>x.id===id);if(!d)return;const owned=k==='machine'?(s.machines[id]||0):k==='worker'?(s.workers[id]||0):(s.research[id]?1:0),currency=k==='machine'?'scrap':'money',balance=currency==='scrap'?s.scrap:(s.money||0);b.disabled=(k==='research'&&owned>0)||balance<cost(d,k)})}function render(){$('machineCards').innerHTML=machines.map(d=>card(d,'machine')).join('');$('workerCards').innerHTML=workers.map(d=>card(d,'worker')).join('');$('researchCards').innerHTML=research.map(d=>card(d,'research')).join('');updateStats()}
-let lastBuyPointer=null;function purchaseButton(b){if(!b||b.disabled)return false;const k=b.dataset.kind,id=b.dataset.id,defs=k==='machine'?machines:k==='worker'?workers:research,d=defs.find(x=>x.id===id);if(!d)return false;if(k==='machine'&&pendingPlacement){notify('Place your selected machine first.');return false}const c=cost(d,k);const currency=k==='machine'?'scrap':'money',balance=currency==='scrap'?s.scrap:(s.money||0);if(balance<c||(k==='research'&&s.research[id])){updateStats();return false}if(k==='machine'){if(pendingPlacement){notify('Place your selected machine first.');return false}if(s.placed.length>=gridCols*gridRows){notify('Factory grid full! All tiles are occupied.');return false}pendingPlacement=id;render();draw();notify('Tap an empty factory-floor slot to place '+d.name+'. Cost is charged when installed.')}else{if(currency==='money')s.money=Math.max(0,(s.money||0)-c);else s.scrap-=c;if(k==='worker')s.workers[id]=(s.workers[id]||0)+1;else s.research[id]=true;render();draw();save();notify(d.name+' added to the workshop!')}return true}document.addEventListener('pointerup',e=>{const b=e.target.closest&&e.target.closest('button[data-kind]');if(!b)return;lastBuyPointer={button:b,time:Date.now()};purchaseButton(b)},true);document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('button[data-kind]');if(!b)return;if(lastBuyPointer&&lastBuyPointer.button===b&&Date.now()-lastBuyPointer.time<800){lastBuyPointer=null;return}purchaseButton(b)},true);
-document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));['build','workers','research'].forEach(k=>$ (k+'Panel').classList.toggle('hidden',k!==tab))}));
-$('destroyBtn').addEventListener('click',()=>{destructionMode=!destructionMode;if(destructionMode)pendingPlacement=null;$('destroyBtn').classList.toggle('active',destructionMode);$('destroyBtn').setAttribute('aria-pressed',String(destructionMode));$('destroyBtn').textContent=destructionMode?'⚠ DEMOLISH MODE: ON · TAP TO REMOVE':'▧ DEMOLISH MODE: OFF';render();draw();notify(destructionMode?'Demolish mode ON — tap any placed structure to remove it. No scrap refund.':'Demolish mode OFF.');});$('collectBtn').addEventListener('click',bonus);$('saveBtn').addEventListener('click',()=>{save();notify('Progress saved on this device!')});$('resetBtn').addEventListener('click',()=>{const ok=window.confirm('Reset Little Factory and erase this device’s saved progress? This cannot be undone.');if(!ok)return;try{localStorage.removeItem('littleFactorySave')}catch(e){}s=fresh();pendingPlacement=null;save();render();draw();notify('Fresh start! Your workshop has been reset.')});function bonus(){const n=Math.max(1,Math.floor(rate()*4));s.scrap+=n;s.total+=n;s.bonusTaps++;render();save();notify('BONUS! +'+fmt(n)+' scrap')}
-const canvas=$('factory'),ctx=canvas.getContext('2d');let tick=0,pointerPos=null,placementDebug='DIAGNOSTIC READY — tap an empty tile';const C={grass:'#83ad70',grass2:'#76a365',dark:'#28443b',lime:'#b9e769',yellow:'#e9bd55',orange:'#e67e50'};
-function rect(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h))}
-function draw(){
-const w=canvas.width,h=canvas.height;ctx.clearRect(0,0,w,h);const R=(x,y,ww,hh,col)=>rect(x,y,ww,hh,col);
-R(0,0,w,h,'#527b56');for(let y=5;y<h;y+=23)for(let x=((y/23|0)%2)*11+4;x<w;x+=29){R(x,y,2,3,'#68945f');R(x+5,y+8,3,2,'#416b4d')}
-R(17,22,586,356,'#263e34');R(22,18,576,356,'#3b5d43');R(29,25,562,342,'#8b9a69');R(29,25,562,7,'#d4c38c');R(29,25,7,342,'#d4c38c');R(29,360,562,7,'#514e3d');R(584,25,7,342,'#514e3d');
-/* Receiving chute: a delivery bonus is paid only when a right-facing belt reaches this intake. */R(555,174,27,75,'#34483a');R(559,178,19,67,'#d1b65d');R(562,182,13,59,'#263d34');R(564,187,9,49,'#4b7150');for(let yy=191;yy<235;yy+=11){R(564,yy,9,3,'#b9e769');}R(555,171,27,4,'#e7d28a');R(555,248,27,4,'#e7d28a');ctx.fillStyle='#263e34';ctx.font='bold 7px monospace';ctx.textAlign='center';ctx.fillText('DELIVERY',568,263);ctx.fillText('BONUS',568,272);ctx.textAlign='left';
-R(37,34,546,320,'#d5c99b');for(let y=36;y<352;y+=32)for(let x=39;x<581;x+=34){R(x,y,32,30,'#cfc397');R(x+1,y+1,30,28,'#d8cda2');if(((x+y)/2|0)%5===0){R(x+7,y+8,3,2,'#c3b889');R(x+22,y+21,2,3,'#c2b889')}}
-/* Shelves and wall-mounted workshop equipment stay separate from the machine floor. */
-R(37,34,546,13,'#354e40');R(37,34,546,4,'#263c33');for(let x=45;x<576;x+=42){R(x,37,25,2,'#536d4e');R(x+25,41,13,2,'#293f34')}
-R(50,51,105,34,'#475c4b');R(54,55,97,26,'#a6c0a0');R(59,59,41,18,'#d4e2b0');R(104,59,42,18,'#83a78a');R(100,55,5,26,'#506953');R(50,51,105,4,'#263e35');R(50,81,105,4,'#263e35');
-R(204,49,144,8,'#425849');R(208,52,136,3,'#e0bd64');for(let x=212;x<340;x+=16){R(x,57,4,16,'#8f6b43');R(x+4,57,8,3,'#c7a35d')}
-R(364,49,77,36,'#435b4b');R(368,53,69,28,'#263f38');R(373,58,59,18,'#9ab28b');R(378,61,48,12,'#c6d3a1');R(364,49,77,4,'#d6b85f');
-R(463,48,89,37,'#344b3d');R(467,52,81,29,'#7b8d68');R(471,56,73,21,'#3b5c4b');R(476,60,63,13,'#95ad7b');R(463,48,89,4,'#d9b95b');
-/* Delivery chute: route the final right-facing conveyor into this intake. */ R(560,188,20,58,'#344b3d');R(563,192,14,50,'#6b8061');R(566,196,8,42,'#283f36');R(562,200,16,3,'#e9bd55');R(562,234,16,3,'#e9bd55');ctx.fillStyle='#f7e8bd';ctx.font='bold 7px monospace';ctx.save();ctx.translate(574,220);ctx.rotate(-Math.PI/2);ctx.textAlign='center';ctx.fillText('DELIVER',0,0);ctx.restore();
-/* Open placement grid: no preset machine pads; every tile is buildable. */
-R(38,82,544,190,'#b6b18a');R(42,86,536,182,'#c9c39a');
-const placed=Array.isArray(s.placed)?s.placed:[],feedXs=[];
-for(let row=0;row<gridRows;row++)for(let col=0;col<gridCols;col++){const gx=gridX+col*gridDX,gy=gridY+row*gridDY;R(gx-15,gy-11,30,22,'#b9b18a');R(gx-14,gy-10,28,20,'#c8c29a');R(gx-14,gy-10,28,1,'#e1d6ac');}
-const occupiedAt=(x,y)=>placed.find(q=>q.x===x&&q.y===y);
-const beltAnim=new Map(),beltRoutes=[],beltTiles=placed.filter(q=>q.id==='conveyor'),beltAt=(x,y)=>beltTiles.find(q=>q.x===x&&q.y===y),dirDelta={R:[gridDX,0],L:[-gridDX,0],D:[0,gridDY],U:[0,-gridDY]},opposite={R:'L',L:'R',D:'U',U:'D'};
-/* Build one centerline polyline per connected stream. A tile only passes items
-   to its outgoing neighbor when that neighbor accepts the flow from this edge.
-   Each tile contributes its entry edge, center and exit edge; the shared edge
-   coordinates are identical, so straight runs cannot jump or sag at joins. */
-const hasMachineFeed=p=>{const d=p.dir||'R',delta=dirDelta[d]||dirDelta.R;return placed.some(q=>q.id!=='conveyor'&&q.x===p.x-delta[0]&&q.y===p.y-delta[1]);};
-const hasIncoming=p=>beltTiles.some(q=>{if(q===p)return false;const d=q.dir||'R',delta=dirDelta[d]||dirDelta.R;return q.x+delta[0]===p.x&&q.y+delta[1]===p.y});
-const seenBelts=new Set();
-function buildBeltRoute(start){
- const route=[];let p=start,guard=0;
- while(p&&!seenBelts.has(p)&&guard++<beltTiles.length+1){
-  const flow=p.dir||'R',prev=route.length?route[route.length-1]:null;
-  const entry=prev?(prev.x<p.x?'L':prev.x>p.x?'R':prev.y<p.y?'U':'D'):opposite[flow];
-  const ep=entry==='L'?{x:p.x-16,y:p.y}:entry==='R'?{x:p.x+16,y:p.y}:entry==='U'?{x:p.x,y:p.y-12}:{x:p.x,y:p.y+12};
-  const ex=flow==='L'?{x:p.x-16,y:p.y}:flow==='R'?{x:p.x+16,y:p.y}:flow==='U'?{x:p.x,y:p.y-12}:{x:p.x,y:p.y+12};
-  /* If this route begins beside a machine that feeds into the belt, begin at the belt center. The first chip visibly emerges from the machine into the belt center instead of appearing at the outside edge. */
-  const sourceDelta=dirDelta[flow],sourceMachine=placed.find(q=>q.id!=='conveyor'&&q.x===p.x-sourceDelta[0]&&q.y===p.y-sourceDelta[1]);
-  const startEp=(!prev&&sourceMachine)?{x:p.x,y:p.y}:ep;
-  const seg={p,entry,flow,ep:(!prev&&sourceMachine)?startEp:ep,ex,idx:route.length,sourceMachine:!prev?sourceMachine:null};route.push(seg);beltAnim.set(p,seg);seenBelts.add(p);
-  const delta=dirDelta[flow],next=beltAt(p.x+delta[0],p.y+delta[1]);
-  if(!next||seenBelts.has(next))break;
-  /* Do not enter a belt through the side it is trying to send material out of. */
-  if((next.dir||'R')===opposite[flow])break;
-  p=next;
- }
- if(route.length){route.forEach((seg,i)=>{seg.route=route;seg.routeLen=route.length;seg.offset=i;});beltRoutes.push(route);}
+const canvas=document.getElementById('world'),ctx=canvas.getContext('2d');
+const $=id=>document.getElementById(id);
+let state={cash:0,bestDepth:0,lifetime:0,runCash:0,active:false,runStart:0,terrain:[],worker:{x:COLS/2,y:0.2,tx:COLS/2,ty:0.2,mode:'wander',target:null,progress:0,walk:0},cameraY:0,manualScroll:0,lastSave:Date.now(),runId:0};
+let lastTick=performance.now(),lastRender=0,logItems=[];
+function note(s){logItems.unshift(s);logItems=logItems.slice(0,8);$('log').innerHTML=logItems.map(t=>'<div>'+escapeHtml(t)+'</div>').join('');}
+function escapeHtml(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function rand(a,b){return a+Math.random()*(b-a);}
+function makeTerrain(){const t=Array.from({length:ROWS},()=>Array(COLS).fill(null));for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){let type='air';if(y===1)type='grass';else if(y>=2){if(y<8)type='dirt';else if(y<22)type=Math.random()<.78?'dirt':'stone';else type=Math.random()<Math.min(.88,.35+(y-22)*.009)?'stone':'dirt';
+const oreChance=Math.min(.22,.018+y*.0014);if(y>5&&Math.random()<oreChance){const r=Math.random();type=r<.48?'coal':r<.75?'copper':r<.91?'iron':r<.975?'silver':'gold';}
+if(y>12&&y<ROWS-2&&Math.random()<.035){const ore=['coal','copper','iron'][Math.floor(Math.random()*3)];for(let oy=0;oy<2;oy++)for(let ox=0;ox<2;ox++)if(x+ox<COLS&&Math.random()<.7)t[y+oy][x+ox]=makeTile(ore,x+ox,y+oy);}
+}if(y===1&&(x===Math.floor(COLS/2)||x===Math.floor(COLS/2)-1))type='air';if(type!=='air')t[y][x]=makeTile(type,x,y);}
+return t;}
+function makeTile(type,x,y){return {type,x,y,hp:mats[type].hp,maxHp:mats[type].hp,solid:true,seed:Math.random()};}
+function resetRunTerrain(){state.terrain=makeTerrain();state.worker={x:COLS/2,y:.25,tx:COLS/2,ty:.25,mode:'wander',target:null,progress:0,walk:0};state.cameraY=0;state.manualScroll=0;state.runCash=0;state.active=false;state.runStart=0;state.runId++;$('runState').textContent='● IDLE';$('runState').className='';$('workerState').textContent='Wandering';$('startBtn').disabled=false;$('stopBtn').disabled=true;note('Terrain restored. Your cash and permanent records are safe.');save();}
+function solid(x,y){if(x<0||x>=COLS||y<0||y>=ROWS)return true;return !!state.terrain[y][x];}
+function tileAt(x,y){if(x<0||x>=COLS||y<0||y>=ROWS)return null;return state.terrain[y][x];}
+function reachableTargets(){const w=state.worker,baseX=Math.floor(w.x),baseY=Math.floor(w.y);let out=[];for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){if(Math.abs(dx)+Math.abs(dy)!==1)continue;let x=baseX+dx,y=baseY+dy,t=tileAt(x,y);if(t&&t.type!=='grass')out.push({x,y,t,score:Math.abs(dx)+Math.abs(dy)+Math.random()*.1});}return out;}
+function chooseTarget(){const w=state.worker;let options=reachableTargets();if(!options.length){ // If standing in a shaft, look for adjacent solid blocks. If boxed in, try digging the block below.
+const below=tileAt(Math.floor(w.x),Math.floor(w.y)+1);if(below)options.push({x:Math.floor(w.x),y:Math.floor(w.y)+1,t:below,score:0});
 }
-for(const p of beltTiles){if((!hasIncoming(p)||hasMachineFeed(p))&&!seenBelts.has(p))buildBeltRoute(p);}
-for(const p of beltTiles){if(!seenBelts.has(p))buildBeltRoute(p);}
-/* Draw machines first and conveyors last so a belt is never hidden by later machine artwork. */for(const p of [...placed.filter(q=>q.id!=='conveyor'),...placed.filter(q=>q.id==='conveyor')]){const d=machines.find(m=>m.id===p.id);if(!d)continue;const x=p.x,y=p.y;
-if(p.id==='conveyor'){
- const flow=p.dir||'R';
- drawMachineArt('conveyor',x,y,flow);
- ctx.fillStyle='#fff0a0';ctx.beginPath();
- if(flow==='R'){ctx.moveTo(x+9,y);ctx.lineTo(x+4,y-4);ctx.lineTo(x+4,y+4)}
- else if(flow==='L'){ctx.moveTo(x-9,y);ctx.lineTo(x-4,y-4);ctx.lineTo(x-4,y+4)}
- else if(flow==='D'){ctx.moveTo(x,y+8);ctx.lineTo(x-4,y+3);ctx.lineTo(x+4,y+3)}
- else{ctx.moveTo(x,y-8);ctx.lineTo(x-4,y-3);ctx.lineTo(x+4,y-3)}
- ctx.closePath();ctx.fill();
-}else{
- drawMachineArt(p.id,x,y,p.dir||'R');
-}
-ctx.save();ctx.translate(x,y);ctx.scale(.38,.38);ctx.translate(-x,-y);R(x-17,y-17,5,3,'#263f34');R(x-16,y-16,3,1,tick%20<10?'#b9e769':'#52775a');ctx.restore();
-}
-/* Tile-by-tile conveyor transport. Every item has a fixed distance phase
-   along a route. It moves to the outgoing edge, enters the next tile at the
-   shared edge, reaches that tile's center, then follows its outgoing direction.
-   The direction changes only at the next tile center; no curve/easing is used. */
-for (let routeIndex=0; routeIndex<beltRoutes.length; routeIndex++) {
- const route=beltRoutes[routeIndex];
- /* A conveyor must connect to at least one other conveyor tile before
-    it can show moving material. A single isolated belt stays completely idle. */
- if (route.length < 2 && !route[0].sourceMachine) continue;
- const segments = [];
- let total = 0;
- for (let i = 0; i < route.length; i++) {
-  const seg = route[i], prev = route[i - 1];
-  const entry = prev ? prev.ex : seg.ep;
-  const points = [entry, seg.p, seg.ex];
-  for (let j = 1; j < points.length; j++) {
-   const a = points[j - 1], b = points[j];
-   const len = Math.hypot(b.x - a.x, b.y - a.y);
-   if (len < .001) continue;
-   segments.push({a, b, start: total, end: total + len});
-   total += len;
-  }
- }
- if (total < 1) continue;
- const spacing = 12, speed = Math.max(0, rate()) * spacing / 60, count = Math.floor(total / spacing) + 1;
- /* One visible chip represents one scrap unit: advance by the production rate per frame, so the belt cannot outrun the factory's actual output. */
- const travel = (tick * speed) % total;
- /* Detect every individual scrap chip crossing from one belt tile to the next. */
- const crossingMarks=[];let cumulative=0;for(let ri=0;ri<route.length-1;ri++){cumulative+=Math.hypot(route[ri].ex.x-route[ri].p.x,route[ri].ex.y-route[ri].p.y)+Math.hypot(route[ri].p.x-(ri?route[ri-1].ex.x:route[ri].ep.x),route[ri].p.y-(ri?route[ri-1].ex.y:route[ri].ep.y));crossingMarks.push(cumulative)}
- if(!s.crossingPhases)s.crossingPhases={};
- const phaseKey='r'+routeIndex,previous=(s.crossingPhases[phaseKey]===undefined?travel:s.crossingPhases[phaseKey]);
- if(tick>1){let passed=0;for(let chip=0;chip<count;chip++){const oldD=(previous+chip*spacing)%total,nowD=(travel+chip*spacing)%total,wrap=nowD<oldD;for(const mark of crossingMarks){if((!wrap&&mark>oldD&&mark<=nowD)||(wrap&&(mark>oldD||mark<=nowD)))passed++;}}if(passed){const payout=passed*(.05+Math.random()*.05);s.money=(s.money||0)+payout;if(tick%8===0)updateStats();}}
- s.crossingPhases[phaseKey]=travel;
- for (let n = 0; n < count; n++) {
-  let d = (travel + n * spacing) % total;
-  let lo = 0, hi = segments.length - 1;
-  while (lo < hi) {
-   const mid = (lo + hi) >> 1;
-   if (segments[mid].end < d) lo = mid + 1; else hi = mid;
-  }
-  const seg = segments[lo], len = seg.end - seg.start;
-  const t = len ? Math.max(0, Math.min(1, (d - seg.start) / len)) : 0;
-  const x = seg.a.x + (seg.b.x - seg.a.x) * t;
-  const y = seg.a.y + (seg.b.y - seg.a.y) * t;
-  /* High-contrast scrap chips: dark outline, bright metal body, and a shine. */
-  R(x-3.4,y-3.4,6.8,6.8,'#26352f');R(x-2.7,y-2.7,5.4,5.4,n%2?'#f08a45':'#ffe06b');R(x-1.7,y-1.7,3.4,3.4,n%2?'#ffd4a1':'#fff8d2');R(x-1.4,y-1.4,1.1,1.1,'#ffffff');
- }
-}
-/* Only installed machines have a lit status lamp and moving operating parts. */
-for(let i=0;i<placed.length;i++){const p=placed[i];if(p.id==='conveyor')continue;const x=p.x,y=p.y;ctx.save();ctx.translate(x,y);ctx.scale(.38,.38);ctx.translate(-x,-y);R(x-29,y-23,9,3,'#263f34');R(x-27,y-22,5,1,(tick+i*5)%20<10?'#b9e769':'#52775a');R(x+20,y-23,9,3,'#263f34');R(x+22,y-22,5,1,(tick+i*7)%18<9?'#e9bd55':'#6a7653');ctx.restore()}
-
-if(destructionMode){ctx.fillStyle='rgba(122,35,31,.94)';ctx.fillRect(48,92,524,16);ctx.fillStyle='#fff1d2';ctx.font='bold 10px monospace';ctx.textAlign='center';ctx.fillText('DEMOLISH MODE · TAP A STRUCTURE TO REMOVE IT',310,103);ctx.textAlign='left';ctx.strokeStyle='#ff785f';ctx.lineWidth=2;for(const p of placed){ctx.strokeRect(p.x-15,p.y-10,30,20);ctx.beginPath();ctx.moveTo(p.x-7,p.y-5);ctx.lineTo(p.x+7,p.y+5);ctx.moveTo(p.x+7,p.y-5);ctx.lineTo(p.x-7,p.y+5);ctx.stroke();}}if(pendingPlacement){const d=machines.find(m=>m.id===pendingPlacement);ctx.fillStyle='rgba(22,43,35,.8)';ctx.fillRect(48,92,524,16);ctx.fillStyle='#f7e8bd';ctx.font='bold 10px monospace';ctx.textAlign='center';ctx.fillText('PLACE '+(d?d.name.toUpperCase():'ITEM')+' · TAP AN EMPTY TILE',310,103);ctx.textAlign='left';if(pointerPos){const q=snapGrid(pointerPos),occupied=!!occupiedAt(q.x,q.y);R(q.x-15,q.y-10,30,20,occupied?'#b65d4b':'#b9e769');R(q.x-12,q.y-7,24,14,occupied?'#743f38':'#e4f5a4');if(!occupied){ctx.save();ctx.globalAlpha=.75;ctx.translate(q.x,q.y);ctx.scale(.62,.62);ctx.translate(-q.x,-q.y);R(q.x-13,q.y-8,26,16,pendingPlacement==='conveyor'?'#607b5d':'#e8d37a');R(q.x-8,q.y-5,16,10,pendingPlacement==='conveyor'?'#283f36':'#49684e');ctx.restore()}}}
-R(49,278,52,42,'#5a5039');R(53,274,48,42,'#896747');R(58,279,38,31,'#b48a54');R(74,279,4,31,'#755439');R(58,291,38,4,'#755439');R(57,278,4,32,'#d6ad69');R(94,278,4,32,'#d6ad69');
-R(511,278,31,38,'#3b5040');R(514,274,28,38,'#61795a');R(519,279,18,27,'#89946b');R(522,282,12,20,'#b8aa68');
-/* Workshop helpers pace and work only when hired. */
-for(let i=0;i<Math.min(9,count(s.workers));i++){const x=200+(i%5)*48+Math.sin(tick*.035+i*2)*5,y=313+Math.cos(tick*.04+i)*2;ctx.save();ctx.translate(x,y);ctx.scale(.68,.68);ctx.translate(-x,-y);R(x-8,y+12,17,4,'#a8a27a');R(x-6,y+12,13,2,'#7c8862');R(x-4,y+6,4,7,'#35483c');R(x+2,y+6,4,7,'#35483c');R(x-6,y-3,13,13,i%3===0?'#477a76':i%3===1?'#c16f4b':'#d0a94d');R(x-5,y-2,11,11,i%3===0?'#5f9b8d':i%3===1?'#d9875a':'#e8c65e');R(x-3,y-7,7,5,'#d4a078');R(x-5,y-12,11,8,'#e8b58b');R(x-5,y-13,11,4,i%2?'#5b4435':'#493f32');R(x-7,y-16,14,4,i%2?'#e7c75c':'#d98a50');R(x-5,y-19,10,4,i%2?'#f5dc7d':'#f0a15e');ctx.restore()}
-R(41,41,106,18,'#263f34');R(45,45,7,10,'#b9e769');ctx.fillStyle='#f7e8bd';ctx.font='bold 10px monospace';ctx.fillText('LITTLE FACTORY',57,53);
-R(459,41,113,18,'#263f34');R(463,45,6,10,'#e7c75c');ctx.fillStyle='#d6e1b1';ctx.font='bold 9px monospace';ctx.fillText(placed.length+' MACHINE'+(placed.length===1?'':'S'),474,53);
-R(30,341,560,12,'#46573e');R(34,344,552,4,'#d6b95e');for(let x=37;x<582;x+=24)R(x,344,10,4,'#364a3a');R(32,25,559,3,'#f0d88c');R(32,25,3,338,'#f0d88c');ctx.fillStyle='rgba(20,35,29,.94)';ctx.fillRect(34,365,552,24);ctx.fillStyle='#fff0b6';ctx.font='10px monospace';ctx.textAlign='left';ctx.fillText(placementDebug.slice(0,88),40,380);
-}function animate(){tick++;if(tick%8===0){const base=machineRate()/7.5;s.scrap+=base;s.total+=base;s.money=(s.money||0)+base*(.25+Math.random()*.25);updateStats();if(tick%120===0)save()}if(tick%60===0){const b=beltStats();if(b.delivered){s.scrap+=.25;s.total+=.25;s.deliveries=(s.deliveries||0)+1;updateStats()}}draw();requestAnimationFrame(animate)}function canvasPoint(e){const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*canvas.width,y:(e.clientY-r.top)/r.height*canvas.height}}canvas.addEventListener('pointermove',e=>{pointerPos=canvasPoint(e);if(pendingPlacement)draw()});canvas.addEventListener('pointerdown',e=>{const {x,y}=canvasPoint(e);pointerPos={x,y};placementDebug='POINTER DOWN x='+x.toFixed(1)+' y='+y.toFixed(1)+' mode='+(destructionMode?'demolish':pendingPlacement||'none')+' placed='+s.placed.length;if(destructionMode){const p=snapGrid({x,y});const idx=s.placed.findIndex(q=>q.x===p.x&&q.y===p.y);if(idx<0){placementDebug='DEMOLISH: no structure at '+p.x+','+p.y;notify('Tap a structure outlined in red to remove it.');draw();return;}const removed=s.placed.splice(idx,1)[0];s.machines[removed.id]=Math.max(0,(s.machines[removed.id]||0)-1);if(!s.machines[removed.id])delete s.machines[removed.id];placementDebug='DEMOLISHED '+removed.id+' at '+p.x+','+p.y+'; remaining='+s.placed.length;render();draw();save();notify(removed.id==='conveyor'?'Conveyor removed.':(machines.find(m=>m.id===removed.id)?.name||removed.id)+' removed. No scrap refund.');return;}if(!pendingPlacement){const tile=s.placed.find(q=>q.id==='conveyor'&&Math.abs(q.x-x)<=15&&Math.abs(q.y-y)<=10);if(tile){const dirs=['R','D','L','U'],next=dirs[(dirs.indexOf(tile.dir||'R')+1)%dirs.length];tile.dir=next;save();draw();notify('This conveyor now flows '+({R:'right →',D:'down ↓',L:'left ←',U:'up ↑'}[next])+'.');return}}if(pendingPlacement){if(x<38||x>582||y<82||y>272){placementDebug='RECEIVED TAP outside grid x='+x.toFixed(1)+' y='+y.toFixed(1);notify('Choose a tile inside the grid.');draw();return}if(x<gridX-gridDX/2||x>gridX+(gridCols-1)*gridDX+gridDX/2||y<gridY-gridDY/2||y>gridY+(gridRows-1)*gridDY+gridDY/2){placementDebug='RECEIVED TAP outside placement bounds x='+x.toFixed(1)+' y='+y.toFixed(1);notify('Place items inside the grid.');draw();return}const p=snapGrid({x,y});const occupant=s.placed.find(q=>q.x===p.x&&q.y===p.y);if(occupant){placementDebug='TAP RECEIVED; '+p.x+','+p.y+' occupied by '+occupant.id+'; placed='+s.placed.length;notify('That tile is occupied. Belts and machines each use one tile.');draw();return}const id=pendingPlacement,d=machines.find(m=>m.id===id),price=cost(d,'machine');if(s.scrap<price){placementDebug='TAP RECEIVED; valid tile '+p.x+','+p.y+' but NOT ENOUGH SCRAP';pendingPlacement=null;render();draw();notify('Not enough scrap to install that item.');return}s.scrap-=price;const tile={id,x:p.x,y:p.y};if(id==='conveyor'){/* Preserve the active flow when extending a moving line: prefer a neighboring belt that is already sending items into this tile, then continue the flow of an adjacent belt/machine. */const adjacent=s.placed.filter(q=>(Math.abs(q.x-p.x)===gridDX&&q.y===p.y)||(Math.abs(q.y-p.y)===gridDY&&q.x===p.x));const beltNeighbors=adjacent.filter(q=>q.id==='conveyor');const machineNeighbors=adjacent.filter(q=>q.id!=='conveyor');const flowOf=q=>q.dir||'R';const delta={R:[gridDX,0],L:[-gridDX,0],D:[0,gridDY],U:[0,-gridDY]};const incoming=beltNeighbors.find(q=>{const v=delta[flowOf(q)];return q.x+v[0]===p.x&&q.y+v[1]===p.y});if(incoming){tile.dir=flowOf(incoming);}else{const outgoing=beltNeighbors.find(q=>{const v=delta[flowOf(q)];return p.x+v[0]===q.x&&p.y+v[1]===q.y});if(outgoing){tile.dir=flowOf(outgoing);}else if(beltNeighbors.length){const q=beltNeighbors[0];if(q.x<p.x)tile.dir='R';else if(q.x>p.x)tile.dir='L';else if(q.y<p.y)tile.dir='D';else tile.dir='U';}else if(machineNeighbors.length){const m=machineNeighbors[0];if(m.x<p.x)tile.dir='R';else if(m.x>p.x)tile.dir='L';else if(m.y<p.y)tile.dir='D';else tile.dir='U';}else tile.dir='R';}}s.placed.push(tile);placementDebug='PLACED '+id+' at '+p.x+','+p.y+'; count='+s.placed.length; s.machines[id]=(s.machines[id]||0)+1;pendingPlacement=null;render();draw();save();notify(id==='conveyor'?'Conveyor placed and aligned to nearby belt flow. Tap a belt to rotate its direction.':d.name+' installed. Adjacent conveyor belts connect automatically.');return}if(x>75&&x<235&&y>95&&y<184)bonus()});render();draw();animate();save();if('serviceWorker'in navigator)navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});document.addEventListener('visibilitychange',()=>{if(document.hidden)save();else{const secs=Math.max(0,Math.min(28800,(Date.now()-(s.last||Date.now()))/1000));if(secs>2){const gain=rate()*secs;s.scrap+=gain;s.total+=gain;notify('Back to work! +'+fmt(gain)+' scrap earned.')}render();save()}});
+if(!options.length){w.mode='stuck';return null;}
+options.sort((a,b)=>{const value=mats[b.t.type].value-mats[a.t.type].value;return value*.02+(a.y-b.y)*.025+(a.score-b.score);});
+return options[0];}
+function tick(dt){const w=state.worker;if(!state.active){w.walk+=dt;if(w.mode!=='wander')w.mode='wander';w.x=COLS/2+Math.sin(performance.now()/1500)*1.8;w.y=.22+Math.abs(Math.sin(performance.now()/800))*.05;return;}
+if(!w.target||!tileAt(w.target.x,w.target.y)){w.target=chooseTarget();w.progress=0;if(!w.target){w.mode='stuck';return;}}
+const t=tileAt(w.target.x,w.target.y);if(!t){w.target=null;return;}
+const tx=w.target.x,ty=w.target.y;
+const dist=Math.hypot((tx+.5)-(w.x+.5),(ty+.5)-(w.y+.5));
+if(dist>1.15){w.mode='walk';w.walk+=dt;const step=Math.min(dist,dt*1.8);w.x+=((tx-w.x)/dist)*step;w.y+=((ty-w.y)/dist)*step;return;}
+w.mode='mine';w.progress+=dt;const hitEvery=1.0;if(w.progress>=hitEvery){w.progress-=hitEvery;t.hp-=1;w.walk+=dt;if(t.hp<=0){const type=t.type,val=mats[type].value;state.terrain[ty][tx]=null;state.cash+=val;state.runCash+=val;state.lifetime+=val;state.bestDepth=Math.max(state.bestDepth,Math.max(0,Math.floor((w.y-1)*TILE/32)));w.target=null;w.progress=0;if(val>0)note('Found '+type+'! +$'+val);else if(Math.random()<.12)note('Cleared dirt and opened the way deeper.');save();}}}
+function resize(){const rect=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(rect.width*dpr);canvas.height=Math.round(rect.height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);}
+function draw(){const cw=canvas.clientWidth,ch=canvas.clientHeight;if(!cw||!ch)return;ctx.clearRect(0,0,cw,ch);const scale=Math.min(cw/(COLS*TILE),1.25),tw=TILE*scale,th=tw,visibleRows=Math.ceil(ch/th)+2;let w=state.worker;const targetCam=Math.max(0,w.y*th-ch*.42);state.cameraY+=(targetCam-state.cameraY)*.09;const camera=state.cameraY+state.manualScroll;const startRow=Math.max(0,Math.floor(camera/th)),endRow=Math.min(ROWS,startRow+visibleRows);
+ctx.fillStyle='#8fcbd0';ctx.fillRect(0,0,cw,ch);
+// distant sky and hills
+ctx.fillStyle='#6eac82';ctx.fillRect(0,Math.max(0,th-camera),cw,Math.max(0,ch-(th-camera)));
+for(let y=startRow;y<endRow;y++)for(let x=0;x<COLS;x++){const t=tileAt(x,y);if(!t)continue;const px=(cw-COLS*tw)/2+x*tw,py=y*th-camera;if(py<-th||py>ch)continue;drawTile(t,px,py,tw,th);}
+drawWorker((cw-COLS*tw)/2+w.x*tw,(w.y*th-camera),tw,th,w.mode);
+if(w.target){const px=(cw-COLS*tw)/2+w.target.x*tw,py=w.target.y*th-camera;ctx.strokeStyle='#ffe17c';ctx.lineWidth=2;ctx.strokeRect(px+2,py+2,tw-4,th-4);}
+const depth=Math.max(0,Math.floor((w.y-1)*TILE/32));$('cash').textContent='$'+Math.floor(state.cash).toLocaleString();$('runCash').textContent='$'+Math.floor(state.runCash).toLocaleString()+' earned this run';$('depth').textContent=depth+' m';$('bestDepth').textContent=state.bestDepth+' m';$('workerState').textContent=state.active?(w.mode==='mine'?'Mining '+(w.target? w.target.t.type:'tile'):w.mode==='walk'?'Moving underground':w.mode==='stuck'?'Finding a path':'Working'):'Wandering';$('materialReadout').textContent=w.target&&tileAt(w.target.x,w.target.y)?w.target.t.type+' · $'+mats[w.target.t.type].value:'Exploring';}
+function drawTile(t,x,y,w,h){const m=mats[t.type];ctx.fillStyle=m.color;ctx.fillRect(x,y,w,h);ctx.fillStyle='rgba(0,0,0,.12)';ctx.fillRect(x,y+h-3,w,3);ctx.strokeStyle='rgba(28,28,20,.3)';ctx.strokeRect(x+.5,y+.5,w-1,h-1);const r=(t.seed||.4);if(t.type==='grass'){ctx.fillStyle='#a6d96a';ctx.fillRect(x,y,w,Math.max(3,h*.17));for(let i=0;i<4;i++){ctx.fillStyle=i%2?'#477e3e':'#d1e67d';ctx.fillRect(x+((i*7+3)%Math.max(4,w-2)),y+1,2,2);}}else if(t.type==='dirt'){ctx.fillStyle='#bb8150';ctx.fillRect(x+w*.2,y+h*.25,3,2);ctx.fillRect(x+w*.68,y+h*.65,2,3);ctx.fillStyle='#77472f';ctx.fillRect(x+w*.48,y+h*.42,3,2);}else if(t.type==='stone'){ctx.fillStyle='#aab0a0';ctx.fillRect(x+w*.2,y+h*.23,w*.3,2);ctx.fillStyle='#555e58';ctx.fillRect(x+w*.58,y+h*.63,w*.22,2);}else{ctx.fillStyle=m.color;ctx.fillRect(x,y,w,h);ctx.fillStyle=t.type==='coal'?'#171e1b':t.type==='copper'?'#f3ad68':t.type==='iron'?'#d4d8cb':t.type==='silver'?'#f1f7ee':'#fff09a';ctx.fillRect(x+w*.22,y+h*.2,w*.22,h*.18);ctx.fillRect(x+w*.48,y+h*.42,w*.25,h*.25);ctx.fillRect(x+w*.18,y+h*.62,w*.16,h*.12);}
+if(t.hp<t.maxHp){const damage=1-t.hp/t.maxHp;ctx.strokeStyle='rgba(27,20,16,'+(0.35+damage*.5)+')';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(x+w*.2,y+h*.2);ctx.lineTo(x+w*.48,y+h*.48);if(damage>.25){ctx.lineTo(x+w*.38,y+h*.7);ctx.moveTo(x+w*.48,y+h*.48);ctx.lineTo(x+w*.78,y+h*.3);}if(damage>.6){ctx.moveTo(x+w*.48,y+h*.48);ctx.lineTo(x+w*.65,y+h*.82);}ctx.stroke();}}
+function drawWorker(x,y,w,h,mode){const s=w/32,px=x,py=y;ctx.fillStyle='rgba(20,30,20,.25)';ctx.fillRect(px+7*s,py+26*s,19*s,4*s);ctx.fillStyle='#5c3c28';ctx.fillRect(px+10*s,py+19*s,5*s,10*s);ctx.fillRect(px+20*s,py+19*s,5*s,10*s);ctx.fillStyle='#4777b5';ctx.fillRect(px+8*s,py+12*s,17*s,10*s);ctx.fillStyle='#e8b17c';ctx.fillRect(px+9*s,py+4*s,15*s,10*s);ctx.fillStyle='#6b4129';ctx.fillRect(px+8*s,py+2*s,16*s,5*s);ctx.fillRect(px+7*s,py+5*s,3*s,5*s);ctx.fillStyle='#24251e';ctx.fillRect(px+19*s,py+8*s,2*s,2*s);ctx.fillStyle='#d5d8c8';ctx.fillRect(px+9*s,py+14*s,14*s,3*s);if(mode==='mine'){ctx.strokeStyle='#d7c39a';ctx.lineWidth=2*s;ctx.beginPath();ctx.moveTo(px+22*s,py+15*s);ctx.lineTo(px+29*s,py+5*s);ctx.stroke();ctx.fillStyle='#aeb6b0';ctx.fillRect(px+26*s,py+3*s,7*s,3*s);}else{ctx.fillStyle='#d7c39a';ctx.fillRect(px+24*s,py+15*s,2*s,10*s);}}
+function save(){try{const data={cash:state.cash,bestDepth:state.bestDepth,lifetime:state.lifetime,lastSave:Date.now()};localStorage.setItem(SAVE_KEY,JSON.stringify(data));$('saveStatus').textContent='● SAVED';}catch(e){$('saveStatus').textContent='● SAVE UNAVAILABLE';}}
+function load(){try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'{}');state.cash=Math.max(0,Number(d.cash)||0);state.bestDepth=Math.max(0,Number(d.bestDepth)||0);state.lifetime=Math.max(0,Number(d.lifetime)||0);}catch(e){}}
+$('startBtn').addEventListener('click',()=>{if(state.active)return;state.active=true;state.runStart=Date.now();state.runCash=0;state.worker.target=null;state.worker.mode='walk';$('runState').textContent='● MINING';$('runState').className='live';$('startBtn').disabled=true;$('stopBtn').disabled=false;note('Mining started. Your worker is heading underground.');save();});
+$('stopBtn').addEventListener('click',()=>{if(!state.active)return;if(confirm('Stop this run and restore the excavated terrain? Your cash and best depth will be kept.'))resetRunTerrain();});
+let touchY=null;canvas.addEventListener('touchstart',e=>{touchY=e.touches[0].clientY;},{passive:true});canvas.addEventListener('touchmove',e=>{if(touchY===null)return;const y=e.touches[0].clientY;state.manualScroll=Math.max(0,Math.min(ROWS*TILE-state.cameraY-canvas.clientHeight,state.manualScroll+(touchY-y)));touchY=y;},{passive:true});canvas.addEventListener('touchend',()=>touchY=null);
+canvas.addEventListener('wheel',e=>{state.manualScroll=Math.max(0,Math.min(ROWS*TILE-state.cameraY-canvas.clientHeight,state.manualScroll+e.deltaY));},{passive:true});
+load();state.terrain=makeTerrain();resize();window.addEventListener('resize',resize);note('Plains survey complete. Break dirt to reach stone and ore deposits.');let autosave=0;
+function loop(now){const dt=Math.min(.1,(now-lastTick)/1000);lastTick=now;tick(dt);if(now-lastRender>33){draw();lastRender=now;}autosave+=dt;if(autosave>10){save();autosave=0;}requestAnimationFrame(loop);}
+requestAnimationFrame(loop);
 })();
-</script></body></html>
+</script>
+</body>
+</html>
