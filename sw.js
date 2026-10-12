@@ -1,4 +1,4 @@
-const CACHE = "little-factory-v50";
+const CACHE = "little-factory-v51";
 const FILES = ["./", "./index.html", "./manifest.webmanifest"];
 self.addEventListener("install", event => event.waitUntil((async () => {
  const cache = await caches.open(CACHE); await cache.addAll(FILES); await self.skipWaiting();
