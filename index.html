@@ -57,8 +57,22 @@ return '<svg class="itemArt" width="58" height="58" viewBox="0 0 64 64" role="im
 }const machineArtImages={};
 function drawMachineArt(id,x,y){
  let img=machineArtImages[id];
- if(!img){img=new Image();machineArtImages[id]=img;img.onload=()=>draw();img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(iconArt(id,'machine'));}
- if(img.complete&&img.naturalWidth>0)ctx.drawImage(img,x-13,y-12,26,24);
+ if(!img){img=new Image();machineArtImages[id]=img;img.onload=()=>draw();img.onerror=()=>{machineArtImages[id]=null;};img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(iconArt(id,'machine'));}
+ if(img&&img.complete&&img.naturalWidth>0){
+   /* Keep the art inside its grid cell while using nearly all available space. */
+   const w=id==='conveyor'?29:28,h=id==='conveyor'?21:21;
+   ctx.imageSmoothingEnabled=false;
+   ctx.drawImage(img,x-w/2,y-h/2,w,h);
+ }else{
+   /* Immediate crisp pixel-art fallback while an SVG is loading or if Safari rejects it. */
+   const R=(dx,dy,w,h,col)=>rect(x+dx,y+dy,w,h,col);
+   R(-13,-10,26,20,'#263f38');R(-11,-8,22,16,'#668477');R(-9,-6,18,12,'#304b42');
+   if(id==='conveyor'||id==='belt'){R(-10,-5,20,10,'#283f36');for(let q=-8;q<=7;q+=5)R(q,-4,2,8,'#b8c7a0');R(-12,-8,24,2,'#e8aa50');R(-12,6,24,2,'#e8aa50')}
+   else if(id==='press'){R(-9,-8,18,3,'#e8aa50');R(-6,-5,12,8,'#b8c7a0');R(-10,4,20,3,'#e8aa50');R(-4,0,8,5,'#d96f45')}
+   else if(id==='smelter'){R(-8,-5,16,11,'#d96f45');R(-5,-2,10,7,'#182c2b');R(-3,1,6,4,'#f1d58a');R(-5,-10,10,3,'#b8c7a0')}
+   else if(id==='assembler'){R(-8,-7,16,12,'#182c2b');R(-5,-4,4,4,'#c3d878');R(2,-4,4,4,'#c3d878');R(-5,3,10,2,'#6caaa4');R(-3,-11,6,4,'#e8aa50')}
+   else if(id==='arm'){R(-10,6,20,3,'#e8aa50');R(-3,-3,6,10,'#e8aa50');R(-1,-8,9,5,'#b8c7a0');R(5,-11,6,4,'#d96f45')}
+ }
 }
 function card(d,k){const owned=k==='machine'?(s.machines[d.id]||0):k==='worker'?(s.workers[d.id]||0):(s.research[d.id]?1:0),done=k==='research'&&owned,c=cost(d,k),currency=k==='machine'?'scrap':'money',balance=currency==='scrap'?s.scrap:(s.money||0),meta=k==='machine'?'+'+d.rate+' scrap/sec · Owned: '+owned:k==='worker'?'+'+Math.round(d.effect*100)+'% production · Owned: '+owned:(done?'RESEARCH COMPLETE':'Cost: $'+c.toFixed(2));return '<article class="card"><div class="ico">'+iconArt(d.id,k)+'</div><div class="info"><div class="title">'+d.name+'</div><div class="desc">'+d.desc+'</div><div class="meta">'+meta+'</div></div><button class="buy" data-kind="'+k+'" data-id="'+d.id+'" '+(done||balance<c?'disabled':'')+'>'+(done?'DONE':'BUY<br>'+(currency==='scrap'?fmt(c)+' ✦':'$'+c.toFixed(2)))+'</button></article>'}
 window.addEventListener('error',e=>{const box=document.getElementById('workshop');if(box){box.style.background='#203c35';box.innerHTML='<div style="padding:20px;color:#ffe5a0;font:14px monospace">Workshop script error: '+String(e.message||'unknown error').replace(/[<>]/g,'')+'. Reload this page and send me this message.</div>';} });
