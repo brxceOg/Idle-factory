@@ -59,7 +59,7 @@ const mats={
 };
 const canvas=document.getElementById('world'),ctx=canvas.getContext('2d');
 const $=id=>document.getElementById(id);
-let state={cash:0,bestDepth:0,lifetime:0,runCash:0,active:false,runStart:0,terrain:[],worker:{x:COLS/2,y:0.2,tx:COLS/2,ty:0.2,mode:'wander',target:null,progress:0,walk:0},cameraY:0,manualScroll:0,lastSave:Date.now(),runId:0};
+let state={cash:0,bestDepth:0,lifetime:0,runCash:0,active:false,runStart:0,terrain:[],worker:{x:COLS/2,y:1.15,tx:COLS/2,ty:1.15,mode:'wander',target:null,progress:0,walk:0},cameraY:0,manualScroll:0,lastSave:Date.now(),runId:0};
 let lastTick=performance.now(),lastRender=0,logItems=[];
 function note(s){logItems.unshift(s);logItems=logItems.slice(0,8);$('log').innerHTML=logItems.map(t=>'<div>'+escapeHtml(t)+'</div>').join('');}
 function escapeHtml(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
@@ -70,7 +70,7 @@ if(y>12&&y<ROWS-2&&Math.random()<.035){const ore=['coal','copper','iron'][Math.f
 }if(y===1&&(x===Math.floor(COLS/2)||x===Math.floor(COLS/2)-1))type='air';if(type!=='air')t[y][x]=makeTile(type,x,y);}
 return t;}
 function makeTile(type,x,y){return {type,x,y,hp:mats[type].hp,maxHp:mats[type].hp,solid:true,seed:Math.random()};}
-function resetRunTerrain(){state.terrain=makeTerrain();state.worker={x:COLS/2,y:.25,tx:COLS/2,ty:.25,mode:'wander',target:null,progress:0,walk:0};state.cameraY=0;state.manualScroll=0;state.runCash=0;state.active=false;state.runStart=0;state.runId++;$('runState').textContent='● IDLE';$('runState').className='';$('workerState').textContent='Wandering';$('startBtn').disabled=false;$('stopBtn').disabled=true;note('Terrain restored. Your cash and permanent records are safe.');save();}
+function resetRunTerrain(){state.terrain=makeTerrain();state.worker={x:COLS/2,y:1.15,tx:COLS/2,ty:1.15,mode:'wander',target:null,progress:0,walk:0};state.cameraY=0;state.manualScroll=0;state.runCash=0;state.active=false;state.runStart=0;state.runId++;$('runState').textContent='● IDLE';$('runState').className='';$('workerState').textContent='Wandering';$('startBtn').disabled=false;$('stopBtn').disabled=true;note('Terrain restored. Your cash and permanent records are safe.');save();}
 function solid(x,y){if(x<0||x>=COLS||y<0||y>=ROWS)return true;return !!state.terrain[y][x];}
 function tileAt(x,y){if(x<0||x>=COLS||y<0||y>=ROWS)return null;return state.terrain[y][x];}
 function reachableTargets(){const w=state.worker,baseX=Math.floor(w.x),baseY=Math.floor(w.y);let out=[];for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){if(Math.abs(dx)+Math.abs(dy)!==1)continue;let x=baseX+dx,y=baseY+dy,t=tileAt(x,y);if(t&&t.type!=='grass')out.push({x,y,t,score:Math.abs(dx)+Math.abs(dy)+Math.random()*.1});}return out;}
@@ -80,7 +80,9 @@ const below=tileAt(Math.floor(w.x),Math.floor(w.y)+1);if(below)options.push({x:M
 if(!options.length){w.mode='stuck';return null;}
 options.sort((a,b)=>{const value=mats[b.t.type].value-mats[a.t.type].value;return value*.02+(a.y-b.y)*.025+(a.score-b.score);});
 return options[0];}
-function tick(dt){const w=state.worker;if(!state.active){w.walk+=dt;if(w.mode!=='wander')w.mode='wander';w.x=COLS/2+Math.sin(performance.now()/1500)*1.8;w.y=.22+Math.abs(Math.sin(performance.now()/800))*.05;return;}
+function tick(dt){const w=state.worker;if(!state.active){w.walk+=dt;if(w.mode!=='wander')w.mode='wander';w.x=COLS/2+Math.sin(performance.now()/1500)*1.8;w.y=1.15+Math.abs(Math.sin(performance.now()/800))*.05;return;}
+// Fall into cleared space instead of walking through solid terrain.
+if(!solid(Math.floor(w.x),Math.floor(w.y)+1)){w.target=null;w.mode='fall';w.y=Math.min(ROWS-2,w.y+dt*2.4);return;}
 if(!w.target||!tileAt(w.target.x,w.target.y)){w.target=chooseTarget();w.progress=0;if(!w.target){w.mode='stuck';return;}}
 const t=tileAt(w.target.x,w.target.y);if(!t){w.target=null;return;}
 const tx=w.target.x,ty=w.target.y;
