@@ -67,18 +67,18 @@ function drawMachineArt(id,x,y,dir,connections){
  const border='#182c2b',shadow='#263f38',metal='#668477',light='#b8c7a0',cream='#f1d58a',gold='#e8aa50',orange='#d96f45',red='#a9483b',blue='#6caaa4',dark='#304b42',lime='#c3d878';
  const frame=typeof tick==='number'?tick:0, pulse=(frame%24<12),pressY=frame%36<18?0:2;
  if(id==='conveyor'){
-  /* Seamless tile: the belt surface fills the complete grid cell, so adjoining
-     tiles meet edge-to-edge like jigsaw pieces rather than using little couplers.
-     Track orientation follows flow while its ends reach the neighboring cell edges. */
+  /* EDGE-TO-EDGE TRACK: no end caps, no connector stubs. The belt lane
+     reaches the exact boundary of each 32x24 cell so neighboring tiles merge. */
   if(vertical){
-   R(-16,-12,32,24,border);R(-13,-12,26,24,shadow);
-   R(-11,-12,22,24,dark);R(-11,-12,22,3,metal);R(-11,9,22,3,gold);
-   for(let q=-9+((frame>>1)%6);q<=8;q+=6){R(-9,q,18,3,cream);R(-8,q+1,16,1,light);}
+   R(-16,-12,32,24,shadow);R(-11,-12,22,24,dark);
+   R(-16,-12,5,24,metal);R(11,-12,5,24,gold);
+   R(-16,-12,32,2,light);R(-16,10,32,2,border);
+   for(let q=-10+((frame>>1)%6);q<=10;q+=6){R(-8,q,16,3,cream);R(-7,q+1,14,1,light);}
   }else{
-   R(-16,-12,32,24,border);R(-16,-10,32,20,shadow);
-   R(-16,-8,32,16,dark);R(-16,-8,3,16,metal);R(13,-8,3,16,gold);
-   for(let q=-14+((frame>>1)%6);q<=13;q+=6){R(q,-7,3,14,cream);R(q+1,-6,1,12,light);}
-   R(-16,-12,32,2,light);
+   R(-16,-12,32,24,shadow);R(-16,-8,32,16,dark);
+   R(-16,-12,32,4,metal);R(-16,8,32,4,gold);
+   R(-16,-12,2,24,light);R(14,-12,2,24,border);
+   for(let q=-13+((frame>>1)%6);q<=13;q+=6){R(q,-7,3,14,cream);R(q+1,-6,1,12,light);}
   }
  }else if(id==='belt'){
   R(-15,-11,30,22,border);R(-13,-9,26,18,metal);R(-12,-6,24,12,dark);
@@ -167,14 +167,7 @@ for(const p of beltTiles){if((!hasIncoming(p)||hasMachineFeed(p))&&!seenBelts.ha
 for(const p of beltTiles){if(!seenBelts.has(p))buildBeltRoute(p);}
 /* Draw machines first and conveyors last so a belt is never hidden by later machine artwork. */for(const p of [...placed.filter(q=>q.id!=='conveyor'),...placed.filter(q=>q.id==='conveyor')]){const d=machines.find(m=>m.id===p.id);if(!d)continue;const x=p.x,y=p.y;
 if(p.id==='conveyor'){
- const flow=p.dir||'R',delta=dirDelta[flow]||dirDelta.R,prevEdge=opposite[flow];
- const prev=beltAt(p.x-delta[0],p.y-delta[1]);
- const prevConnected=!!(prev&&(prev.dir||'R')===flow);
- const outNext=beltAt(p.x+delta[0],p.y+delta[1]);
- const outConnected=!!(outNext&&(outNext.dir||'R')!==opposite[flow]);
- const inFrom=beltTiles.find(q=>q!==p&&q.x+(dirDelta[q.dir||'R']||dirDelta.R)[0]===p.x&&q.y+(dirDelta[q.dir||'R']||dirDelta.R)[1]===p.y);
- const incomingEdge=inFrom?(inFrom.x<p.x?'L':inFrom.x>p.x?'R':inFrom.y<p.y?'U':'D'):(hasMachineFeed(p)?prevEdge:null);
- const outgoingEdge=outConnected?flow:null;
+ const flow=p.dir||'R';
  drawMachineArt('conveyor',x,y,flow);
  ctx.fillStyle='#fff0a0';ctx.beginPath();
  if(flow==='R'){ctx.moveTo(x+9,y);ctx.lineTo(x+4,y-4);ctx.lineTo(x+4,y+4)}
