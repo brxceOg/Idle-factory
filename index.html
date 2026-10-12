@@ -66,6 +66,7 @@ const beltAnim=new Map(),beltRoutes=[],beltTiles=placed.filter(q=>q.id==='convey
    to its outgoing neighbor when that neighbor accepts the flow from this edge.
    Each tile contributes its entry edge, center and exit edge; the shared edge
    coordinates are identical, so straight runs cannot jump or sag at joins. */
+const hasMachineFeed=p=>{const d=p.dir||'R',delta=dirDelta[d]||dirDelta.R;return placed.some(q=>q.id!=='conveyor'&&q.x===p.x-delta[0]&&q.y===p.y-delta[1]);};
 const hasIncoming=p=>beltTiles.some(q=>{if(q===p)return false;const d=q.dir||'R',delta=dirDelta[d]||dirDelta.R;return q.x+delta[0]===p.x&&q.y+delta[1]===p.y});
 const seenBelts=new Set();
 function buildBeltRoute(start){
@@ -87,7 +88,7 @@ function buildBeltRoute(start){
  }
  if(route.length){route.forEach((seg,i)=>{seg.route=route;seg.routeLen=route.length;seg.offset=i;});beltRoutes.push(route);}
 }
-for(const p of beltTiles){if(!hasIncoming(p)&&!seenBelts.has(p))buildBeltRoute(p);}
+for(const p of beltTiles){if((!hasIncoming(p)||hasMachineFeed(p))&&!seenBelts.has(p))buildBeltRoute(p);}
 for(const p of beltTiles){if(!seenBelts.has(p))buildBeltRoute(p);}
 for(const p of placed){const d=machines.find(m=>m.id===p.id);if(!d)continue;const x=p.x,y=p.y;
 if(p.id==='conveyor'){
